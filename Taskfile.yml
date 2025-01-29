@@ -1,0 +1,14 @@
+version: 3
+tasks:
+  build:
+    desc: Build the binary
+    cmds:
+      - go generate ./...
+      - go build -ldflags "-s -w -X=github.com/algolia/cli/pkg/version.Version={{ .VERSION }}" -o algolia cmd/algolia/main.go
+    env:
+      VERSION: main
+  test:
+    desc: Run unit tests
+    run: always
+    cmds:
+      - go test ./...
