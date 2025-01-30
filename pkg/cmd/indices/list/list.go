@@ -102,24 +102,40 @@ func runListCmd(opts *ListOptions) error {
 		} else {
 			primary = *index.Primary
 		}
-		const layout = "2006-01-02T15:04:05.999Z"
-		updatedAt, err := time.Parse(layout, index.UpdatedAt)
+		updatedAt, err := parseTime(index.UpdatedAt)
 		if err != nil {
-			panic(err)
+			return fmt.Errorf("can't parse %s into a time struct.", index.UpdatedAt)
 		}
-		createdAt, err := time.Parse(layout, index.CreatedAt)
+		createdAt, err := parseTime(index.CreatedAt)
 		if err != nil {
-			panic(err)
+			return fmt.Errorf("can't parse %s into a time struct.", index.CreatedAt)
 		}
 		table.AddField(index.Name, nil, nil)
 		table.AddField(humanize.Comma(int64(index.Entries)), nil, nil)
 		table.AddField(humanize.Bytes(uint64(index.DataSize)), nil, nil)
-		table.AddField(humanize.Time(updatedAt), nil, nil)
-		table.AddField(humanize.Time(createdAt), nil, nil)
+		table.AddField(updatedAt, nil, nil)
+		table.AddField(createdAt, nil, nil)
 		table.AddField(strconv.Itoa(int(index.LastBuildTimeS))+"s", nil, nil)
 		table.AddField(primary, nil, nil)
 		table.AddField(fmt.Sprintf("%v", index.Replicas), nil, nil)
 		table.EndRow()
 	}
 	return table.Render()
+}
+
+// parseTime parses the string from the API response into a relative time string
+func parseTime(timeAsString string) (string, error) {
+	const layout = "2006-01-02T15:04:05.999Z"
+
+	// This *should* restore the previous behavior when UpdatedAt is empty
+	if timeAsString == "" {
+		return "a long while ago", nil
+	}
+
+	t, err := time.Parse(layout, timeAsString)
+	if err != nil {
+		return "", err
+	}
+
+	return humanize.Time(t), nil
 }
