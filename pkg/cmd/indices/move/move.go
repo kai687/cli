@@ -115,7 +115,9 @@ func runMoveCmd(opts *MoveOptions) error {
 	res, err := client.OperationIndex(
 		client.NewApiOperationIndexRequest(
 			opts.SourceIndex,
-			search.NewEmptyOperationIndexParams().SetDestination(opts.DestinationIndex),
+			search.NewEmptyOperationIndexParams().
+				SetDestination(opts.DestinationIndex).
+				SetOperation(search.OPERATION_TYPE_MOVE),
 		),
 	)
 	if err != nil {
