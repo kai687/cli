@@ -139,14 +139,14 @@ func Test_runDeleteCmd(t *testing.T) {
 		// 	isTTY:     true,
 		// 	wantOut:   "✓ Deleted indices foo\n",
 		// },
-		// {
-		// 	name:        "TTY, has replica indices",
-		// 	cli:         "foo --confirm --includeReplicas",
-		// 	indices:     []string{"foo"},
-		// 	hasReplicas: true,
-		// 	isTTY:       true,
-		// 	wantOut:     "✓ Deleted indices foo\n",
-		// },
+		{
+			name:        "TTY, has replica indices",
+			cli:         "foo --confirm --include-replicas",
+			indices:     []string{"foo"},
+			hasReplicas: true,
+			isTTY:       true,
+			wantOut:     "✓ Deleted indices foo\n",
+		},
 	}
 
 	for _, tt := range tests {
