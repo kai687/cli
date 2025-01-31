@@ -26,7 +26,7 @@ func New(appVersion string, cfg config.IConfig) *cmdutil.Factory {
 	return f
 }
 
-func ioStreams(f *cmdutil.Factory) *iostreams.IOStreams {
+func ioStreams(_ *cmdutil.Factory) *iostreams.IOStreams {
 	io := iostreams.System()
 	return io
 }
@@ -63,7 +63,7 @@ func v4searchClient(f *cmdutil.Factory, appVersion string) func() (*v4.APIClient
 			return nil, err
 		}
 
-		defaultClient, err := v4.NewClient(appID, apiKey)
+		defaultClient, _ := v4.NewClient(appID, apiKey)
 		defaultUserAgent := defaultClient.GetConfiguration().UserAgent
 
 		// TODO: Doesn't support custom `search_hosts` yet.
