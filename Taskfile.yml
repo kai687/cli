@@ -1,4 +1,5 @@
 version: 3
+output: prefixed
 tasks:
   build:
     desc: Build the binary
@@ -17,3 +18,15 @@ tasks:
     run: always
     cmds:
       - go test ./...
+  lint:
+    desc: Lint code
+    cmds:
+      - golangci-lint run
+  ci:
+    desc: Run everything
+    aliases:
+      - default
+    deps:
+      - build
+      - test
+      - lint
