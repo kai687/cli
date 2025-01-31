@@ -23,7 +23,12 @@ func main() {
 
 func run(args []string) error {
 	flags := pflag.NewFlagSet("", pflag.ContinueOnError)
-	dir := flags.StringP("app_data-path", "", "", "Path directory where you want generate documentation data files")
+	dir := flags.StringP(
+		"app_data-path",
+		"",
+		"",
+		"Path directory where you want generate documentation data files",
+	)
 	help := flags.BoolP("help", "h", false, "Help about any command")
 	target := flags.StringP("target", "T", "old", "target old or new documentation website")
 

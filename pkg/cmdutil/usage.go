@@ -53,7 +53,11 @@ func (u *UsageEntries) AddBasicUsage(IOStreams *iostreams.IOStreams, command *co
 	}
 }
 
-func (u *UsageEntries) AddFlags(IOStreams *iostreams.IOStreams, command *cobra.Command, flagUsages string) {
+func (u *UsageEntries) AddFlags(
+	IOStreams *iostreams.IOStreams,
+	command *cobra.Command,
+	flagUsages string,
+) {
 	cs := IOStreams.ColorScheme()
 
 	if flagUsages != "" {
@@ -61,11 +65,19 @@ func (u *UsageEntries) AddFlags(IOStreams *iostreams.IOStreams, command *cobra.C
 	}
 }
 
-func (u *UsageEntries) AddAllFlags(IOStreams *iostreams.IOStreams, command *cobra.Command, flagUsages string) {
+func (u *UsageEntries) AddAllFlags(
+	IOStreams *iostreams.IOStreams,
+	command *cobra.Command,
+	flagUsages string,
+) {
 	u.AddFlags(IOStreams, command, command.LocalFlags().FlagUsages())
 }
 
-func (u *UsageEntries) AddFilteredFlags(IOStreams *iostreams.IOStreams, command *cobra.Command, flagsToDisplay []string) {
+func (u *UsageEntries) AddFilteredFlags(
+	IOStreams *iostreams.IOStreams,
+	command *cobra.Command,
+	flagsToDisplay []string,
+) {
 	filteredFlags := filterFlagSet(*command.LocalFlags(), flagsToDisplay)
 
 	u.AddFlags(IOStreams, command, filteredFlags.FlagUsages())
@@ -98,7 +110,11 @@ func (u *UsageEntries) DisplayEntries(out io.Writer) {
 	}
 }
 
-func UsageFunc(IOStreams *iostreams.IOStreams, command *cobra.Command, flagUsages string) func(cmd *cobra.Command) error {
+func UsageFunc(
+	IOStreams *iostreams.IOStreams,
+	command *cobra.Command,
+	flagUsages string,
+) func(cmd *cobra.Command) error {
 	return func(cmd *cobra.Command) error {
 		entries := UsageEntries{}
 
@@ -110,17 +126,28 @@ func UsageFunc(IOStreams *iostreams.IOStreams, command *cobra.Command, flagUsage
 	}
 }
 
-func UsageFuncDefault(IOStreams *iostreams.IOStreams, command *cobra.Command) func(cmd *cobra.Command) error {
+func UsageFuncDefault(
+	IOStreams *iostreams.IOStreams,
+	command *cobra.Command,
+) func(cmd *cobra.Command) error {
 	return UsageFunc(IOStreams, command, command.LocalFlags().FlagUsages())
 }
 
-func UsageFuncWithFilteredFlags(IOStreams *iostreams.IOStreams, command *cobra.Command, flagsToDisplay []string) func(cmd *cobra.Command) error {
+func UsageFuncWithFilteredFlags(
+	IOStreams *iostreams.IOStreams,
+	command *cobra.Command,
+	flagsToDisplay []string,
+) func(cmd *cobra.Command) error {
 	filteredFlags := filterFlagSet(*command.LocalFlags(), flagsToDisplay)
 
 	return UsageFunc(IOStreams, command, filteredFlags.FlagUsages())
 }
 
-func UsageFuncWithFilteredAndInheritedFlags(IOStreams *iostreams.IOStreams, command *cobra.Command, flagsToDisplay []string) func(cmd *cobra.Command) error {
+func UsageFuncWithFilteredAndInheritedFlags(
+	IOStreams *iostreams.IOStreams,
+	command *cobra.Command,
+	flagsToDisplay []string,
+) func(cmd *cobra.Command) error {
 	return func(cmd *cobra.Command) error {
 		entries := UsageEntries{}
 		entries.AddBasicUsage(IOStreams, command)
@@ -132,7 +159,10 @@ func UsageFuncWithFilteredAndInheritedFlags(IOStreams *iostreams.IOStreams, comm
 	}
 }
 
-func UsageFuncWithInheritedFlagsOnly(IOStreams *iostreams.IOStreams, command *cobra.Command) func(cmd *cobra.Command) error {
+func UsageFuncWithInheritedFlagsOnly(
+	IOStreams *iostreams.IOStreams,
+	command *cobra.Command,
+) func(cmd *cobra.Command) error {
 	return func(cmd *cobra.Command) error {
 		entries := UsageEntries{}
 		entries.AddBasicUsage(IOStreams, command)

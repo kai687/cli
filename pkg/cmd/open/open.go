@@ -21,15 +21,21 @@ type OpenUrl struct {
 }
 
 var openUrlMap = map[string]OpenUrl{
-	"api":       {Default: "https://www.algolia.com/doc/api-reference/rest-api/"},
-	"codex":     {Default: "https://www.algolia.com/developers/code-exchange/"},
-	"cli-docs":  {Default: "https://algolia.com/doc/tools/cli/get-started/overview/"},
-	"cli-repo":  {Default: "https://github.com/algolia/cli"},
-	"dashboard": {Default: "https://www.algolia.com/dashboard", WithAppId: "https://www.algolia.com/apps/%s/dashboard"},
+	"api":      {Default: "https://www.algolia.com/doc/api-reference/rest-api/"},
+	"codex":    {Default: "https://www.algolia.com/developers/code-exchange/"},
+	"cli-docs": {Default: "https://algolia.com/doc/tools/cli/get-started/overview/"},
+	"cli-repo": {Default: "https://github.com/algolia/cli"},
+	"dashboard": {
+		Default:   "https://www.algolia.com/dashboard",
+		WithAppId: "https://www.algolia.com/apps/%s/dashboard",
+	},
 	"devhub":    {Default: "https://www.algolia.com/developers/"},
 	"docs":      {Default: "https://algolia.com/doc/"},
 	"languages": {Default: "https://alg.li/supported-languages"},
-	"status":    {Default: "https://status.algolia.com/", WithAppId: "https://www.algolia.com/apps/%s/monitoring/status"},
+	"status": {
+		Default:   "https://status.algolia.com/",
+		WithAppId: "https://www.algolia.com/apps/%s/monitoring/status",
+	},
 }
 
 func openNames() []string {

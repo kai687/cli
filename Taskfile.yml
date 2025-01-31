@@ -22,6 +22,11 @@ tasks:
     desc: Lint code
     cmds:
       - golangci-lint run
+  format:
+    desc: Format code
+    cmds:
+      - gofumpt -w pkg cmd test internal api
+      - golines -w pkg cmd test internal api
   ci:
     desc: Run everything
     aliases:

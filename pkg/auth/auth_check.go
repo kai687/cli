@@ -36,7 +36,9 @@ func errMissingACLs(missing []string) error {
 }
 
 // errAdminAPIKeyRequired is returned when the command requires an admin API Key
-var errAdminAPIKeyRequired = errors.New("This command requires an admin API Key. Please use the `--api-key` flag to provide a valid admin API Key.\n")
+var errAdminAPIKeyRequired = errors.New(
+	"This command requires an admin API Key. Please use the `--api-key` flag to provide a valid admin API Key.\n",
+)
 
 func DisableAuthCheck(cmd *cobra.Command) {
 	if cmd.Annotations == nil {

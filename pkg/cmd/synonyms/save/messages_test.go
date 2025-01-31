@@ -94,7 +94,11 @@ func Test_GetSynonymSuccessMessage(t *testing.T) {
 			err, message := GetSuccessMessage(tt.synonymFlags, tt.saveOptions.Indice)
 
 			assert.Equal(t, err, nil)
-			assert.Equal(t, tt.wantsOutput, fmt.Sprintf("%s %s", f.IOStreams.ColorScheme().SuccessIcon(), message))
+			assert.Equal(
+				t,
+				tt.wantsOutput,
+				fmt.Sprintf("%s %s", f.IOStreams.ColorScheme().SuccessIcon(), message),
+			)
 		})
 	}
 }

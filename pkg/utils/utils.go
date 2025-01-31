@@ -78,7 +78,9 @@ func SliceToString(str []string) string {
 
 // based on https://github.com/watson/ci-info/blob/HEAD/index.js
 func IsCI() bool {
-	return os.Getenv("CI") != "" || // GitHub Actions, Travis CI, CircleCI, Cirrus CI, GitLab CI, AppVeyor, CodeShip, dsari
+	return os.Getenv(
+		"CI",
+	) != "" || // GitHub Actions, Travis CI, CircleCI, Cirrus CI, GitLab CI, AppVeyor, CodeShip, dsari
 		os.Getenv("CONTINUOUS_INTEGRATION") != "" || // Travis CI, Cirrus CI
 		os.Getenv("BUILD_NUMBER") != "" || // Jenkins, TeamCity
 		os.Getenv("CI_APP_ID") != "" || // Appflow

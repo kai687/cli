@@ -16,7 +16,13 @@ import (
 
 func Test_runOperationsCmd(t *testing.T) {
 	tmpFile := filepath.Join(t.TempDir(), "operations.json")
-	err := os.WriteFile(tmpFile, []byte(`{"action":"addObject","indexName":"index1","body":{"firstname":"Jimmie","lastname":"Barninger"}}`), 0o600)
+	err := os.WriteFile(
+		tmpFile,
+		[]byte(
+			`{"action":"addObject","indexName":"index1","body":{"firstname":"Jimmie","lastname":"Barninger"}}`,
+		),
+		0o600,
+	)
 	require.NoError(t, err)
 
 	tests := []struct {
@@ -80,7 +86,10 @@ func Test_runOperationsCmd(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			r := httpmock.Registry{}
 			if tt.wantErr == "" {
-				r.Register(httpmock.REST("POST", "1/indexes/*/batch"), httpmock.JSONResponse(search.MultipleBatchRes{}))
+				r.Register(
+					httpmock.REST("POST", "1/indexes/*/batch"),
+					httpmock.JSONResponse(search.MultipleBatchRes{}),
+				)
 			}
 			defer r.Verify(t)
 

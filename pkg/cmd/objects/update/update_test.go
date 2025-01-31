@@ -79,7 +79,10 @@ func Test_runUpdateCmd(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			r := httpmock.Registry{}
 			if tt.wantErr == "" {
-				r.Register(httpmock.REST("POST", "1/indexes/foo/batch"), httpmock.JSONResponse(search.BatchRes{}))
+				r.Register(
+					httpmock.REST("POST", "1/indexes/foo/batch"),
+					httpmock.JSONResponse(search.BatchRes{}),
+				)
 			}
 			defer r.Verify(t)
 

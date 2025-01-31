@@ -60,7 +60,12 @@ func NewClientWithConfig(config _insights.Configuration) *Client {
 // FetchEvents retrieves events from the Algolia Insights API.
 func (c *Client) FetchEvents(startDate, endDate time.Time, limit int) (EventsRes, error) {
 	var res EventsRes
-	path := fmt.Sprintf("/1/events?startDate=%s&endDate=%s&limit=%d", startDate.Format("2006-01-02T15:04:05.000Z"), endDate.Format("2006-01-02T15:04:05.000Z"), limit)
+	path := fmt.Sprintf(
+		"/1/events?startDate=%s&endDate=%s&limit=%d",
+		startDate.Format("2006-01-02T15:04:05.000Z"),
+		endDate.Format("2006-01-02T15:04:05.000Z"),
+		limit,
+	)
 	err := c.transport.Request(&res, http.MethodGet, path, nil, call.Read, nil)
 	return res, err
 }
