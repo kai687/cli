@@ -12,22 +12,20 @@ import (
 	"github.com/algolia/cli/pkg/utils"
 )
 
-var (
-	WriteAPIKeyDefaultACLs = []string{
-		"search",
-		"browse",
-		"seeUnretrievableAttributes",
-		"listIndexes",
-		"analytics",
-		"logs",
-		"addObject",
-		"deleteObject",
-		"deleteIndex",
-		"settings",
-		"editSettings",
-		"recommendation",
-	}
-)
+var WriteAPIKeyDefaultACLs = []string{
+	"search",
+	"browse",
+	"seeUnretrievableAttributes",
+	"listIndexes",
+	"analytics",
+	"logs",
+	"addObject",
+	"deleteObject",
+	"deleteIndex",
+	"settings",
+	"editSettings",
+	"recommendation",
+}
 
 // errMissingACLs return an error with the missing ACLs
 func errMissingACLs(missing []string) error {

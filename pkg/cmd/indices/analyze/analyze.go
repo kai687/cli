@@ -222,7 +222,7 @@ func printStats(stats *analyze.Stats, opts *StatsOptions) error {
 	for _, key := range sorted {
 		// Print colorized output depending on the percentage
 		// If <1%: red, if <5%: yellow
-		var color = func(s string) string { return s }
+		color := func(s string) string { return s }
 		if stats.Attributes[key].Percentage < 1 {
 			color = cs.Red
 		} else if stats.Attributes[key].Percentage < 5 {

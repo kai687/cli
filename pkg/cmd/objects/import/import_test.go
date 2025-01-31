@@ -16,7 +16,7 @@ import (
 
 func Test_runImportCmd(t *testing.T) {
 	tmpFile := filepath.Join(t.TempDir(), "objects.json")
-	err := os.WriteFile(tmpFile, []byte("{\"objectID\":\"foo\"}"), 0600)
+	err := os.WriteFile(tmpFile, []byte("{\"objectID\":\"foo\"}"), 0o600)
 	require.NoError(t, err)
 
 	tests := []struct {

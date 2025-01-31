@@ -148,7 +148,6 @@ func runOpenCmd(opts *OpenOptions) error {
 	var err error
 	if url, ok := nameUrlMap[opts.Shortcut]; ok {
 		err = open.Browser(url)
-
 		if err != nil {
 			return err
 		}

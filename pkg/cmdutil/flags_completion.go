@@ -39,6 +39,7 @@ func StringSliceCompletionFunc(allowedMap map[string]string, prefixAllDescriptio
 		return runStringSliceCompletion(allowedMap, toComplete, prefixAllDescription)
 	}
 }
+
 func runStringSliceCompletion(allowedMap map[string]string, toComplete string, prefixAllDescription string) ([]string, cobra.ShellCompDirective) {
 	var results []string
 	var prefix string

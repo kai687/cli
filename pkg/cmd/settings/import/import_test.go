@@ -15,9 +15,8 @@ import (
 )
 
 func Test_runExportCmd(t *testing.T) {
-
 	tmpFile := filepath.Join(t.TempDir(), "settings.json")
-	err := os.WriteFile(tmpFile, []byte("{\"enableReRanking\":false}"), 0600)
+	err := os.WriteFile(tmpFile, []byte("{\"enableReRanking\":false}"), 0o600)
 	require.NoError(t, err)
 
 	tests := []struct {

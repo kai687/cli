@@ -58,6 +58,5 @@ func Test_runStringSliceCompletion(t *testing.T) {
 			assert.Equal(t, tt.results, results)
 			assert.Equal(t, cobra.ShellCompDirectiveNoSpace, rule)
 		})
-
 	}
 }

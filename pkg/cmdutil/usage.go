@@ -47,7 +47,8 @@ func (u *UsageEntries) AddBasicUsage(IOStreams *iostreams.IOStreams, command *co
 
 		u.AddEntry(UsageEntry{
 			cs.Bold("Available commands:"),
-			strings.Join(commands, "\n")},
+			strings.Join(commands, "\n"),
+		},
 		)
 	}
 }
@@ -117,12 +118,10 @@ func UsageFuncWithFilteredFlags(IOStreams *iostreams.IOStreams, command *cobra.C
 	filteredFlags := filterFlagSet(*command.LocalFlags(), flagsToDisplay)
 
 	return UsageFunc(IOStreams, command, filteredFlags.FlagUsages())
-
 }
 
 func UsageFuncWithFilteredAndInheritedFlags(IOStreams *iostreams.IOStreams, command *cobra.Command, flagsToDisplay []string) func(cmd *cobra.Command) error {
 	return func(cmd *cobra.Command) error {
-
 		entries := UsageEntries{}
 		entries.AddBasicUsage(IOStreams, command)
 		entries.AddFilteredFlags(IOStreams, command, flagsToDisplay)
@@ -142,7 +141,6 @@ func UsageFuncWithInheritedFlagsOnly(IOStreams *iostreams.IOStreams, command *co
 		entries.DisplayEntries(IOStreams.Out)
 		return nil
 	}
-
 }
 
 func Dedent(s string) string {

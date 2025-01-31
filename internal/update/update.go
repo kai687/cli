@@ -97,12 +97,12 @@ func setStateEntry(stateFilePath string, t time.Time, r ReleaseInfo) error {
 		return err
 	}
 
-	err = os.MkdirAll(filepath.Dir(stateFilePath), 0755)
+	err = os.MkdirAll(filepath.Dir(stateFilePath), 0o755)
 	if err != nil {
 		return err
 	}
 
-	err = os.WriteFile(stateFilePath, content, 0600)
+	err = os.WriteFile(stateFilePath, content, 0o600)
 	return err
 }
 
