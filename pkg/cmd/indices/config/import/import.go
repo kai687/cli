@@ -131,7 +131,7 @@ func runImportCmd(opts *config.ImportOptions) error {
 
 	if opts.ImportConfig.Settings != nil && utils.Contains(opts.Scope, "settings") {
 		_, err = client.SetSettings(
-			client.NewApiSetSettingsRequest(opts.Index, *&opts.ImportConfig.Settings).
+			client.NewApiSetSettingsRequest(opts.Index, opts.ImportConfig.Settings).
 				WithForwardToReplicas(opts.ForwardSettingsToReplicas),
 		)
 		if err != nil {
