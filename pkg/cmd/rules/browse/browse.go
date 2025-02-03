@@ -1,9 +1,7 @@
 package browse
 
 import (
-	"io"
-
-	"github.com/algolia/algoliasearch-client-go/v3/algolia/search"
+	"github.com/algolia/algoliasearch-client-go/v4/algolia/search"
 	"github.com/spf13/cobra"
 
 	"github.com/MakeNowJust/heredoc"
@@ -18,26 +16,27 @@ type ExportOptions struct {
 	Config config.IConfig
 	IO     *iostreams.IOStreams
 
-	SearchClient func() (*search.Client, error)
+	SearchClient func() (*search.APIClient, error)
 
-	Indice string
+	Index string
 
 	PrintFlags *cmdutil.PrintFlags
 }
 
-// NewBrowseCmd creates and returns a browse command for indice's rules
+// NewBrowseCmd creates and returns a browse command for Rules
 func NewBrowseCmd(f *cmdutil.Factory) *cobra.Command {
 	opts := &ExportOptions{
 		IO:           f.IOStreams,
 		Config:       f.Config,
-		SearchClient: f.SearchClient,
+		SearchClient: f.V4SearchClient,
 		PrintFlags:   cmdutil.NewPrintFlags().WithDefaultOutput("json"),
 	}
 
 	cmd := &cobra.Command{
 		Use:               "browse <index>",
 		Args:              validators.ExactArgs(1),
-		ValidArgsFunction: cmdutil.IndexNames(opts.SearchClient),
+		Aliases:           []string{"list"},
+		ValidArgsFunction: cmdutil.V4IndexNames(opts.SearchClient),
 		Short:             "List all the rules of an index",
 		Annotations: map[string]string{
 			"runInWebCLI": "true",
@@ -51,7 +50,7 @@ func NewBrowseCmd(f *cmdutil.Factory) *cobra.Command {
 			$ algolia rules browse MOVIES -o json > rules.ndjson
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			opts.Indice = args[0]
+			opts.Index = args[0]
 
 			return runListCmd(opts)
 		},
@@ -68,27 +67,23 @@ func runListCmd(opts *ExportOptions) error {
 		return err
 	}
 
-	indice := client.InitIndex(opts.Indice)
-	res, err := indice.BrowseRules()
-	if err != nil {
-		return err
-	}
-
 	p, err := opts.PrintFlags.ToPrinter()
 	if err != nil {
 		return err
 	}
-
-	for {
-		iObject, err := res.Next()
-		if err != nil {
-			if err == io.EOF {
-				return nil
+	err = client.BrowseRules(
+		opts.Index,
+		*search.NewEmptySearchRulesParams(),
+		search.WithAggregator(func(res any, _ error) {
+			for _, rule := range res.(*search.SearchRulesResponse).Hits {
+				if err = p.Print(opts.IO, rule); err != nil {
+					continue
+				}
 			}
-			return err
-		}
-		if err = p.Print(opts.IO, iObject); err != nil {
-			return err
-		}
+		}),
+	)
+	if err != nil {
+		return err
 	}
+	return nil
 }
