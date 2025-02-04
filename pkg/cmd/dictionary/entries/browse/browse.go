@@ -8,6 +8,7 @@ import (
 	"github.com/algolia/algoliasearch-client-go/v4/algolia/search"
 	"github.com/spf13/cobra"
 
+	"github.com/algolia/cli/pkg/cmd/dictionary/shared"
 	"github.com/algolia/cli/pkg/cmdutil"
 	"github.com/algolia/cli/pkg/config"
 	"github.com/algolia/cli/pkg/iostreams"
@@ -37,17 +38,13 @@ func NewBrowseCmd(f *cmdutil.Factory, runF func(*BrowseOptions) error) *cobra.Co
 		PrintFlags:   cmdutil.NewPrintFlags().WithDefaultOutput("json"),
 	}
 
-	var allowedDictionaryTypes []string
-	for _, d := range search.AllowedDictionaryTypeEnumValues {
-		allowedDictionaryTypes = append(allowedDictionaryTypes, string(d))
-	}
-
 	cmd := &cobra.Command{
 		Use:       "browse {<dictionary>... | --all} [--include-defaults]",
 		Args:      cobra.OnlyValidArgs,
-		ValidArgs: allowedDictionaryTypes,
+		Aliases:   []string{"list"},
+		ValidArgs: shared.DictionaryTypes(),
 		ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-			return allowedDictionaryTypes, cobra.ShellCompDirectiveNoFileComp
+			return shared.DictionaryTypes(), cobra.ShellCompDirectiveNoFileComp
 		},
 		Annotations: map[string]string{
 			"acls": "settings",
@@ -77,11 +74,7 @@ func NewBrowseCmd(f *cmdutil.Factory, runF func(*BrowseOptions) error) *cobra.Co
 			}
 
 			if opts.All {
-				opts.Dictionaries = []search.DictionaryType{
-					search.DICTIONARY_TYPE_STOPWORDS,
-					search.DICTIONARY_TYPE_COMPOUNDS,
-					search.DICTIONARY_TYPE_PLURALS,
-				}
+				opts.Dictionaries = search.AllowedDictionaryTypeEnumValues
 			} else {
 				opts.Dictionaries = make([]search.DictionaryType, len(args))
 				for i, dict := range args {
