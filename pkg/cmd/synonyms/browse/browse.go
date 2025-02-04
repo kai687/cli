@@ -1,6 +1,8 @@
 package browse
 
 import (
+	"fmt"
+
 	"github.com/MakeNowJust/heredoc"
 	"github.com/algolia/algoliasearch-client-go/v4/algolia/search"
 	"github.com/spf13/cobra"
@@ -64,6 +66,14 @@ func runBrowseCmd(opts *BrowseOptions) error {
 	client, err := opts.SearchClient()
 	if err != nil {
 		return err
+	}
+	// Check if index exists, because the API just returns an empty list if it doesn't
+	exists, err := client.IndexExists(opts.Index)
+	if err != nil {
+		return err
+	}
+	if !exists {
+		return fmt.Errorf("Index %s doesn't exist.", opts.Index)
 	}
 
 	p, err := opts.PrintFlags.ToPrinter()
