@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/algolia/algoliasearch-client-go/v3/algolia/search"
+	"github.com/algolia/algoliasearch-client-go/v4/algolia/search"
 	"github.com/google/shlex"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"github.com/algolia/cli/pkg/cmdutil"
-	"github.com/algolia/cli/pkg/httpmock"
+	"github.com/algolia/cli/pkg/httpmock/v4"
 	"github.com/algolia/cli/pkg/iostreams"
-	"github.com/algolia/cli/test"
+	"github.com/algolia/cli/test/v4"
 )
 
 func TestNewSaveCmd(t *testing.T) {
@@ -29,11 +29,8 @@ func TestNewSaveCmd(t *testing.T) {
 			tty:      false,
 			wantsErr: false,
 			wantsOpts: SaveOptions{
-				Indice: "legends",
-				Synonym: search.NewRegularSynonym(
-					"1",
-					"jordan", "mj",
-				),
+				Index:             "legends",
+				Synonym:           *search.NewEmptySynonymHit().SetObjectID("1").SetType(search.SYNONYM_TYPE_SYNONYM).SetSynonyms([]string{"jordan", "mj"}),
 				ForwardToReplicas: false,
 			},
 		},
@@ -43,11 +40,8 @@ func TestNewSaveCmd(t *testing.T) {
 			tty:      true,
 			wantsErr: false,
 			wantsOpts: SaveOptions{
-				Indice: "legends",
-				Synonym: search.NewRegularSynonym(
-					"1",
-					"jordan", "mj",
-				),
+				Index:             "legends",
+				Synonym:           *search.NewEmptySynonymHit().SetObjectID("1").SetType(search.SYNONYM_TYPE_SYNONYM).SetSynonyms([]string{"jordan", "mj"}),
 				ForwardToReplicas: false,
 			},
 		},
@@ -86,7 +80,7 @@ func TestNewSaveCmd(t *testing.T) {
 			assert.Equal(t, "", stdout.String())
 			assert.Equal(t, "", stderr.String())
 
-			assert.Equal(t, tt.wantsOpts.Indice, opts.Indice)
+			assert.Equal(t, tt.wantsOpts.Index, opts.Index)
 			assert.Equal(t, tt.wantsOpts.Synonym, opts.Synonym)
 			assert.Equal(t, tt.wantsOpts.ForwardToReplicas, opts.ForwardToReplicas)
 		})
@@ -168,7 +162,10 @@ func Test_runSaveCmd(t *testing.T) {
 					"PUT",
 					fmt.Sprintf("1/indexes/%s/synonyms/%s", tt.indice, tt.synonymID),
 				),
-				httpmock.JSONResponse(search.RegularSynonym{}),
+				httpmock.JSONResponse(search.SynonymHit{
+					ObjectID: "1",
+					Type:     search.SYNONYM_TYPE_SYNONYM,
+				}),
 			)
 			defer r.Verify(t)
 
