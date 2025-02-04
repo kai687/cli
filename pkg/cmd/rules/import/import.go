@@ -137,6 +137,7 @@ func runImportCmd(opts *ImportOptions) error {
 		totalCount = 0
 	)
 
+	clearExistingRules := opts.ClearExistingRules
 	opts.IO.StartProgressIndicatorWithLabel("Importing rules")
 	for opts.Scanner.Scan() {
 		line := opts.Scanner.Text()
@@ -154,7 +155,6 @@ func runImportCmd(opts *ImportOptions) error {
 		count++
 
 		// If requested, only clear existing rules the first time
-		clearExistingRules := opts.ClearExistingRules
 		if count == batchSize {
 			_, err := client.SaveRules(
 				client.NewApiSaveRulesRequest(opts.Index, rules).

@@ -78,6 +78,9 @@ func NewSaveCmd(f *cmdutil.Factory, runF func(*SaveOptions) error) *cobra.Comman
 				return err
 			}
 			err = json.Unmarshal(tmp, &opts.Synonym)
+			if err != nil {
+				return err
+			}
 
 			err, successMessage := GetSuccessMessage(*flags, opts.Index)
 			if err != nil {
