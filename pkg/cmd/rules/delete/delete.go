@@ -5,8 +5,7 @@ import (
 	"strings"
 
 	"github.com/MakeNowJust/heredoc"
-	"github.com/algolia/algoliasearch-client-go/v3/algolia/opt"
-	"github.com/algolia/algoliasearch-client-go/v3/algolia/search"
+	"github.com/algolia/algoliasearch-client-go/v4/algolia/search"
 	"github.com/spf13/cobra"
 
 	"github.com/algolia/cli/pkg/cmdutil"
@@ -21,9 +20,9 @@ type DeleteOptions struct {
 	Config config.IConfig
 	IO     *iostreams.IOStreams
 
-	SearchClient func() (*search.Client, error)
+	SearchClient func() (*search.APIClient, error)
 
-	Indice            string
+	Index             string
 	RuleIDs           []string
 	ForwardToReplicas bool
 
@@ -37,13 +36,13 @@ func NewDeleteCmd(f *cmdutil.Factory, runF func(*DeleteOptions) error) *cobra.Co
 	opts := &DeleteOptions{
 		IO:           f.IOStreams,
 		Config:       f.Config,
-		SearchClient: f.SearchClient,
+		SearchClient: f.V4SearchClient,
 	}
 
 	cmd := &cobra.Command{
 		Use:               "delete <index> --rule-ids <rule-ids> --confirm",
 		Args:              validators.ExactArgs(1),
-		ValidArgsFunction: cmdutil.IndexNames(opts.SearchClient),
+		ValidArgsFunction: cmdutil.V4IndexNames(opts.SearchClient),
 		Annotations: map[string]string{
 			"acls": "editSettings",
 		},
@@ -59,7 +58,7 @@ func NewDeleteCmd(f *cmdutil.Factory, runF func(*DeleteOptions) error) *cobra.Co
 			$ algolia rules delete MOVIES --rule-ids 1,2
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			opts.Indice = args[0]
+			opts.Index = args[0]
 			if !confirm {
 				if !opts.IO.CanPrompt() {
 					return cmdutil.FlagErrorf(
@@ -93,9 +92,8 @@ func runDeleteCmd(opts *DeleteOptions) error {
 		return err
 	}
 
-	indice := client.InitIndex(opts.Indice)
 	for _, ruleID := range opts.RuleIDs {
-		if _, err := indice.GetRule(ruleID); err != nil {
+		if _, err := client.GetRule(client.NewApiGetRuleRequest(opts.Index, ruleID)); err != nil {
 			// The original error is not helpful, so we print a more helpful message
 			extra := "Operation aborted, no deletion action taken"
 			if strings.Contains(err.Error(), "ObjectID does not exist") {
@@ -111,7 +109,7 @@ func runDeleteCmd(opts *DeleteOptions) error {
 			fmt.Sprintf(
 				"Delete the %s from %s?",
 				utils.Pluralize(len(opts.RuleIDs), "rule"),
-				opts.Indice,
+				opts.Index,
 			),
 			&confirmed,
 		)
@@ -124,7 +122,10 @@ func runDeleteCmd(opts *DeleteOptions) error {
 	}
 
 	for _, ruleID := range opts.RuleIDs {
-		_, err = indice.DeleteRule(ruleID, opt.ForwardToReplicas(opts.ForwardToReplicas))
+		_, err = client.DeleteRule(
+			client.NewApiDeleteRuleRequest(opts.Index, ruleID).
+				WithForwardToReplicas(opts.ForwardToReplicas),
+		)
 		if err != nil {
 			err = fmt.Errorf("failed to delete rule %s: %w", ruleID, err)
 			return err
@@ -138,7 +139,7 @@ func runDeleteCmd(opts *DeleteOptions) error {
 			"%s Successfully deleted %s from %s\n",
 			cs.SuccessIcon(),
 			utils.Pluralize(len(opts.RuleIDs), "rule"),
-			opts.Indice,
+			opts.Index,
 		)
 	}
 
