@@ -38,7 +38,7 @@ func NewBrowseCmd(f *cmdutil.Factory) *cobra.Command {
 		Use:               "browse <index>",
 		Args:              validators.ExactArgs(1),
 		Aliases:           []string{"list"},
-		ValidArgsFunction: cmdutil.V4IndexNames(opts.SearchClient),
+		ValidArgsFunction: cmdutil.IndexNames(opts.SearchClient),
 		Short:             "List all the rules of an index",
 		Annotations: map[string]string{
 			"runInWebCLI": "true",
