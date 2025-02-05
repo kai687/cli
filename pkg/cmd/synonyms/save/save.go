@@ -1,7 +1,6 @@
 package save
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/MakeNowJust/heredoc"
@@ -72,15 +71,7 @@ func NewSaveCmd(f *cmdutil.Factory, runF func(*SaveOptions) error) *cobra.Comman
 			if err != nil {
 				return err
 			}
-			// Map to object
-			tmp, err := json.Marshal(synonym)
-			if err != nil {
-				return err
-			}
-			err = json.Unmarshal(tmp, &opts.Synonym)
-			if err != nil {
-				return err
-			}
+			opts.Synonym = *synonym
 
 			err, successMessage := GetSuccessMessage(*flags, opts.Index)
 			if err != nil {

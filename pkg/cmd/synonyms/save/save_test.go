@@ -91,15 +91,15 @@ func Test_runSaveCmd(t *testing.T) {
 	tests := []struct {
 		name      string
 		cli       string
-		indice    string
+		index     string
 		synonymID string
 		isTTY     bool
 		wantOut   string
 	}{
 		{
 			name:      "single id, two synonyms, no TTY",
-			cli:       "legends --id 1 --synonyms jorda,mj",
-			indice:    "legends",
+			cli:       "legends --id 1 --synonyms jordan,mj",
+			index:     "legends",
 			synonymID: "1",
 			isTTY:     false,
 			wantOut:   "",
@@ -107,7 +107,7 @@ func Test_runSaveCmd(t *testing.T) {
 		{
 			name:      "single id, two synonyms, TTY",
 			cli:       "legends --id 1 --synonyms jordan,mj",
-			indice:    "legends",
+			index:     "legends",
 			synonymID: "1",
 			isTTY:     true,
 			wantOut:   "✓ Synonym '1' successfully saved with 2 synonyms (jordan, mj) to legends\n",
@@ -115,7 +115,7 @@ func Test_runSaveCmd(t *testing.T) {
 		{
 			name:      "single id, mutiple synonyms, TTY",
 			cli:       "legends --id 1 --synonyms jordan,mj,goat,michael,23",
-			indice:    "legends",
+			index:     "legends",
 			synonymID: "1",
 			isTTY:     true,
 			wantOut:   "✓ Synonym '1' successfully saved with 5 synonyms (jordan, mj, goat, michael, 23) to legends\n",
@@ -123,15 +123,15 @@ func Test_runSaveCmd(t *testing.T) {
 		{
 			name:      "single id, mutiple synonyms, TTY with shorthands",
 			cli:       "legends -i 1 -s jordan,mj,goat,michael,23",
-			indice:    "legends",
+			index:     "legends",
 			synonymID: "1",
 			isTTY:     true,
 			wantOut:   "✓ Synonym '1' successfully saved with 5 synonyms (jordan, mj, goat, michael, 23) to legends\n",
 		},
 		{
-			name:      "single id, oneWaySynonym type, multiple synonyms, TTY",
-			cli:       "legends --id 1 --type oneWaySynonym --synonyms jordan,mj,goat,michael --input 23",
-			indice:    "legends",
+			name:      "single id,  one-way-synonym type, multiple synonyms, TTY",
+			cli:       "legends --id 1 --type onewaysynonym --synonyms jordan,mj,goat,michael --input 23",
+			index:     "legends",
 			synonymID: "1",
 			isTTY:     true,
 			wantOut:   "✓ One way synonym '1' successfully saved with input '23' and 4 synonyms (jordan, mj, goat, michael) to legends\n",
@@ -139,15 +139,15 @@ func Test_runSaveCmd(t *testing.T) {
 		{
 			name:      "single id, placeholder type, one placeholder, multiple replacements, TTY",
 			cli:       "legends -i 1 -t placeholder -l jordan -r mj,goat,michael,23",
-			indice:    "legends",
+			index:     "legends",
 			synonymID: "1",
 			isTTY:     true,
 			wantOut:   "✓ Placeholder synonym '1' successfully saved with placeholder 'jordan' and 4 replacements (mj, goat, michael, 23) to legends\n",
 		},
 		{
-			name:      "single id, altCorrection1 type, one word, multiple corrections, TTY",
-			cli:       "legends -i 1 -t altCorrection1 -w jordan -c mj,goat,michael,23",
-			indice:    "legends",
+			name:      "single id, altcorrection1 type, one word, multiple corrections, TTY",
+			cli:       "legends -i 1 -t altcorrection1 -w jordan -c mj,goat,michael,23",
+			index:     "legends",
 			synonymID: "1",
 			isTTY:     true,
 			wantOut:   "✓ Alt correction 1 synonym '1' successfully saved with word 'jordan' and 4 corrections (mj, goat, michael, 23) to legends\n",
@@ -160,11 +160,11 @@ func Test_runSaveCmd(t *testing.T) {
 			r.Register(
 				httpmock.REST(
 					"PUT",
-					fmt.Sprintf("1/indexes/%s/synonyms/%s", tt.indice, tt.synonymID),
+					fmt.Sprintf("1/indexes/%s/synonyms/%s", tt.index, tt.synonymID),
 				),
 				httpmock.JSONResponse(search.SynonymHit{
 					ObjectID: "1",
-					Type:     search.SYNONYM_TYPE_SYNONYM,
+					// Type:     search.SYNONYM_TYPE_SYNONYM,
 				}),
 			)
 			defer r.Verify(t)
