@@ -8,11 +8,6 @@ tasks:
       - go build -ldflags "-s -w -X=github.com/algolia/cli/pkg/version.Version={{ .VERSION }}" -o algolia cmd/algolia/main.go
     vars:
       VERSION: main
-  generate:
-    desc: Generate command flags
-    internal: true
-    cmds:
-      - go generate ./...
   test:
     desc: Run unit tests
     run: always
@@ -35,3 +30,36 @@ tasks:
       - build
       - test
       - lint
+  api-specs-pr:
+    desc: Create a new PR or update existing one for updating the Search API spec
+    deps: [download-spec-file, generate]
+    preconditions:
+      - git status --porcelain
+    cmds:
+      - git checkout -B {{ .branch }}
+      - git add .
+      - "git commit --message 'chore: update search api spec'"
+      - git push --force --set-upstream origin {{ .branch }}
+      - "gh pr list --base main --head {{ .branch }} | grep -q . || gh pr create --title '{{ .pr-title }}' --description '{{ .pr-description }}'"
+    vars:
+      branch: feat/api-specs
+      pr-title: "chore: Update Search API spec"
+      pr-description: "Update Search API spec"
+    env:
+      GIT_COMMITTER_NAME: algolia-ci
+      GIT_AUTHOR_NAME: algolia-ci
+      GIT_COMMITTER_EMAIL: noreply@algolia.com
+      GIT_AUTHOR_EMAIL: noreply@algolia.com
+  download-spec-file:
+    desc: Download the latest Search API spec from GitHub
+    internal: true
+    cmds:
+      - curl -fsSL -o {{ .destination }} {{ .source }}
+    vars:
+      source: https://raw.githubusercontent.com/algolia/api-clients-automation/main/specs/bundled/search.yml
+      destination: ./api/specs/search.yml
+  generate:
+    desc: Generate command flags
+    internal: true
+    cmds:
+      - go generate ./...
