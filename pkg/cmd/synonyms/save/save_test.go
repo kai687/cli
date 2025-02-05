@@ -130,7 +130,7 @@ func Test_runSaveCmd(t *testing.T) {
 		},
 		{
 			name:      "single id,  one-way-synonym type, multiple synonyms, TTY",
-			cli:       "legends --id 1 --type onewaysynonym --synonyms jordan,mj,goat,michael --input 23",
+			cli:       "legends --id 1 --type oneWaySynonym --synonyms jordan,mj,goat,michael --input 23",
 			index:     "legends",
 			synonymID: "1",
 			isTTY:     true,
@@ -146,7 +146,7 @@ func Test_runSaveCmd(t *testing.T) {
 		},
 		{
 			name:      "single id, altcorrection1 type, one word, multiple corrections, TTY",
-			cli:       "legends -i 1 -t altcorrection1 -w jordan -c mj,goat,michael,23",
+			cli:       "legends -i 1 -t altCorrection1 -w jordan -c mj,goat,michael,23",
 			index:     "legends",
 			synonymID: "1",
 			isTTY:     true,

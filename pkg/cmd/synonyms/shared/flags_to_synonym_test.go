@@ -29,7 +29,7 @@ func Test_FlagsToSynonym(t *testing.T) {
 			name:     "Regular synonym explicit type",
 			wantsErr: false,
 			synonymFlags: SynonymFlags{
-				SynonymType: string(search.SYNONYM_TYPE_SYNONYM),
+				SynonymType: "synonym",
 				SynonymID:   "23",
 				Synonyms:    []string{"mj", "goat"},
 			},
@@ -40,35 +40,35 @@ func Test_FlagsToSynonym(t *testing.T) {
 			name:     "One way synonym",
 			wantsErr: false,
 			synonymFlags: SynonymFlags{
-				SynonymType:  string(search.SYNONYM_TYPE_ONEWAYSYNONYM),
+				SynonymType:  "oneWaySynonym",
 				SynonymID:    "23",
 				Synonyms:     []string{"mj", "goat"},
 				SynonymInput: "michael",
 			},
-			synonymType: search.SYNONYM_TYPE_ONEWAYSYNONYM,
+			synonymType: search.SYNONYM_TYPE_ONE_WAY_SYNONYM,
 		},
 		// Alt correction type
 		{
 			name:     "AltCorrection1 synonym",
 			wantsErr: false,
 			synonymFlags: SynonymFlags{
-				SynonymType:        string(search.SYNONYM_TYPE_ALTCORRECTION1),
+				SynonymType:        "altCorrection1",
 				SynonymID:          "23",
 				SynonymCorrections: []string{"mj", "goat"},
 				SynonymWord:        "michael",
 			},
-			synonymType: search.SYNONYM_TYPE_ALTCORRECTION1,
+			synonymType: search.SYNONYM_TYPE_ALT_CORRECTION1,
 		},
 		{
 			name:     "AltCorrection2 synonym",
 			wantsErr: false,
 			synonymFlags: SynonymFlags{
-				SynonymType:        string(search.SYNONYM_TYPE_ALTCORRECTION2),
+				SynonymType:        "altCorrection2",
 				SynonymID:          "24",
 				SynonymCorrections: []string{"bryant", "mamba"},
 				SynonymWord:        "kobe",
 			},
-			synonymType: search.SYNONYM_TYPE_ALTCORRECTION2,
+			synonymType: search.SYNONYM_TYPE_ALT_CORRECTION2,
 		},
 		// Placeholder type
 		{

@@ -22,10 +22,11 @@ type SynonymFlags struct {
 type SynonymType string
 
 const (
+	// "synonym"
 	Regular        string = string(search.SYNONYM_TYPE_SYNONYM)
-	OneWay         string = string(search.SYNONYM_TYPE_ONEWAYSYNONYM)
-	AltCorrection1 string = string(search.SYNONYM_TYPE_ALTCORRECTION1)
-	AltCorrection2 string = string(search.SYNONYM_TYPE_ALTCORRECTION2)
+	OneWay         string = string(search.SYNONYM_TYPE_ONE_WAY_SYNONYM)
+	AltCorrection1 string = string(search.SYNONYM_TYPE_ALT_CORRECTION1)
+	AltCorrection2 string = string(search.SYNONYM_TYPE_ALT_CORRECTION2)
 	Placeholder    string = string(search.SYNONYM_TYPE_PLACEHOLDER)
 )
 
@@ -58,21 +59,21 @@ func FlagsToSynonym(flags SynonymFlags) (*search.SynonymHit, error) {
 	switch flags.SynonymType {
 	case OneWay:
 		return search.NewEmptySynonymHit().
-				SetType(search.SYNONYM_TYPE_ONEWAYSYNONYM).
+				SetType(search.SYNONYM_TYPE_ONE_WAY_SYNONYM).
 				SetObjectID(flags.SynonymID).
 				SetInput(flags.SynonymInput).
 				SetSynonyms(flags.Synonyms),
 			nil
 	case AltCorrection1:
 		return search.NewEmptySynonymHit().
-				SetType(search.SYNONYM_TYPE_ALTCORRECTION1).
+				SetType(search.SYNONYM_TYPE_ALT_CORRECTION1).
 				SetObjectID(flags.SynonymID).
 				SetWord(flags.SynonymWord).
 				SetCorrections(flags.SynonymCorrections),
 			nil
 	case AltCorrection2:
 		return search.NewEmptySynonymHit().
-				SetType(search.SYNONYM_TYPE_ALTCORRECTION2).
+				SetType(search.SYNONYM_TYPE_ALT_CORRECTION2).
 				SetObjectID(flags.SynonymID).
 				SetWord(flags.SynonymWord).
 				SetCorrections(flags.SynonymCorrections),
