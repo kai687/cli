@@ -1,71 +1,48 @@
 package insights
 
 import (
-	"fmt"
-	"net/http"
+	"encoding/json"
 	"time"
 
-	"github.com/algolia/algoliasearch-client-go/v3/algolia/call"
-	"github.com/algolia/algoliasearch-client-go/v3/algolia/compression"
-	_insights "github.com/algolia/algoliasearch-client-go/v3/algolia/insights"
-	"github.com/algolia/algoliasearch-client-go/v3/algolia/transport"
+	algoliaInsights "github.com/algolia/algoliasearch-client-go/v4/algolia/insights"
 )
 
-// Client provides methods to interact with the Algolia Insights API.
+// Client wraps the default Insights API client so that we can declare methods on it
 type Client struct {
-	appID     string
-	transport *transport.Transport
+	*algoliaInsights.APIClient
 }
 
-// NewClient instantiates a new client able to interact with the Algolia
-// Insights API.
-func NewClient(appID, apiKey string) *Client {
-	return NewClientWithConfig(
-		_insights.Configuration{
-			AppID:  appID,
-			APIKey: apiKey,
-		},
-	)
+// TODO: Need to add the CLIs user agent to this
+// NewClient instantiates a new client for interacting with the Insights API
+func NewClient(appID, apiKey string, region algoliaInsights.Region) (*Client, error) {
+	client, err := algoliaInsights.NewClient(appID, apiKey, region)
+	if err != nil {
+		return nil, err
+	}
+	return &Client{client}, nil
 }
 
-// NewClientWithConfig instantiates a new client able to interact with the
-// Algolia Insights API.
-func NewClientWithConfig(config _insights.Configuration) *Client {
-	var hosts []*transport.StatefulHost
-
-	if config.Hosts == nil {
-		hosts = defaultHosts(config.Region)
-	} else {
-		for _, h := range config.Hosts {
-			hosts = append(hosts, transport.NewStatefulHost(h, call.IsReadWrite))
-		}
+// GetEvents retrieves a number of events from the Algolia Insights API.
+func (c *Client) GetEvents(startDate, endDate time.Time, limit int) (*EventsRes, error) {
+	layout := "2006-01-02T15:04:05.000Z"
+	params := map[string]any{
+		"startDate": startDate.Format(layout),
+		"endDate":   endDate.Format(layout),
+		"limit":     limit,
+	}
+	res, err := c.CustomGet(c.NewApiCustomGetRequest("1/events").WithParameters(params))
+	if err != nil {
+		return nil, err
+	}
+	tmp, err := json.Marshal(res)
+	if err != nil {
+		return nil, err
+	}
+	var eventsRes EventsRes
+	err = json.Unmarshal(tmp, &eventsRes)
+	if err != nil {
+		return nil, err
 	}
 
-	return &Client{
-		appID: config.AppID,
-		transport: transport.New(
-			hosts,
-			config.Requester,
-			config.AppID,
-			config.APIKey,
-			config.ReadTimeout,
-			config.WriteTimeout,
-			config.Headers,
-			config.ExtraUserAgent,
-			compression.None,
-		),
-	}
-}
-
-// FetchEvents retrieves events from the Algolia Insights API.
-func (c *Client) FetchEvents(startDate, endDate time.Time, limit int) (EventsRes, error) {
-	var res EventsRes
-	path := fmt.Sprintf(
-		"/1/events?startDate=%s&endDate=%s&limit=%d",
-		startDate.Format("2006-01-02T15:04:05.000Z"),
-		endDate.Format("2006-01-02T15:04:05.000Z"),
-		limit,
-	)
-	err := c.transport.Request(&res, http.MethodGet, path, nil, call.Read, nil)
-	return res, err
+	return &eventsRes, err
 }
