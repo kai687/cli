@@ -2,9 +2,13 @@ package insights
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
+	"github.com/algolia/algoliasearch-client-go/v4/algolia/insights"
 	algoliaInsights "github.com/algolia/algoliasearch-client-go/v4/algolia/insights"
+	"github.com/algolia/algoliasearch-client-go/v4/algolia/transport"
+	"github.com/algolia/cli/pkg/version"
 )
 
 // Client wraps the default Insights API client so that we can declare methods on it
@@ -12,10 +16,24 @@ type Client struct {
 	*algoliaInsights.APIClient
 }
 
-// TODO: Need to add the CLIs user agent to this
-// NewClient instantiates a new client for interacting with the Insights API
+// NewClient instantiates a new Insights API client
 func NewClient(appID, apiKey string, region algoliaInsights.Region) (*Client, error) {
-	client, err := algoliaInsights.NewClient(appID, apiKey, region)
+	// Get the default user agent
+	userAgent, err := getUserAgentInfo(appID, apiKey, region, version.Version)
+	if err != nil {
+		return nil, err
+	}
+	if userAgent == "" {
+		return nil, fmt.Errorf("User agent info must not be empty")
+	}
+	clientConfig := insights.InsightsConfiguration{
+		Configuration: transport.Configuration{
+			AppID:     appID,
+			ApiKey:    apiKey,
+			UserAgent: userAgent,
+		},
+	}
+	client, err := algoliaInsights.NewClientWithConfig(clientConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -45,4 +63,19 @@ func (c *Client) GetEvents(startDate, endDate time.Time, limit int) (*EventsRes,
 	}
 
 	return &eventsRes, err
+}
+
+// getUserAgentInfo returns the user agent string for the Insights client in the CLI
+func getUserAgentInfo(
+	appID string,
+	apiKey string,
+	region algoliaInsights.Region,
+	appVersion string,
+) (string, error) {
+	client, err := algoliaInsights.NewClient(appID, apiKey, region)
+	if err != nil {
+		return "", err
+	}
+
+	return client.GetConfiguration().UserAgent + fmt.Sprintf("Algolia CLI (%s)", appVersion), nil
 }
