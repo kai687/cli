@@ -27,7 +27,7 @@ tasks:
       - gofumpt -w pkg cmd test internal api
       - golines -w pkg cmd test internal api
   ci:
-    desc: Run everything
+    desc: Test, lint, and format
     aliases:
       - default
     deps:
@@ -35,7 +35,7 @@ tasks:
       - test
       - lint
   api-specs-pr:
-    desc: Create a new PR or update existing one for updating the Search API spec
+    desc: Update the flags for search and settings from the latest Search API spec
     summary: |
       This task downloads the latest Search API OpenAPI spec from the api-clients-automation repo,
       generates the flags, and makes a new PR to the CLI GitHub repo.
