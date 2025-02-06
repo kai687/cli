@@ -13,7 +13,7 @@ tasks:
     deps: [generate]
     cmd: go build -ldflags "-s -w -X=github.com/algolia/cli/pkg/version.Version={{ .VERSION }}" -o algolia cmd/algolia/main.go
     vars:
-      VERSION: main
+      VERSION: '{{ .VERSION | default "main" }}'
   test:
     desc: Run unit tests
     run: always
@@ -62,7 +62,6 @@ tasks:
       GIT_AUTHOR_EMAIL: noreply@algolia.com
   download-spec-file:
     desc: Download the latest Search API spec from GitHub
-    internal: true
     cmd: curl -fsSL -o {{ .destination }} {{ .source }}
     vars:
       source: https://raw.githubusercontent.com/algolia/api-clients-automation/main/specs/bundled/search.yml
