@@ -92,7 +92,7 @@ type NoOpTelemetryClient struct{}
 
 type CLIAnalyticsEventMetadata struct {
 	AnonymousID              string   // the anonymous id is the hash of the mac address of the machine
-	UserId                   string   // TODO: Once we implement OAuth
+	UserID                   string   // TODO: Once we implement OAuth
 	InvocationID             string   // the invocation id is unique to each context object and represents all events coming from one command
 	ConfiguredApplicationsNb int      // the number of configured applications
 	AppID                    string   // the app id with which the command was called

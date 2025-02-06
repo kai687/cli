@@ -42,7 +42,7 @@ func GetRules(client *search.APIClient, srcIndex string) ([]search.Rule, error) 
 	return rules, nil
 }
 
-type ExportConfigJson struct {
+type ExportConfigJSON struct {
 	Settings *search.SettingsResponse `json:"settings,omitempty"`
 	Rules    []search.Rule            `json:"rules,omitempty"`
 	Synonyms []search.SynonymHit      `json:"synonyms,omitempty"`
@@ -53,8 +53,8 @@ func GetIndexConfig(
 	index string,
 	scope []string,
 	cs *iostreams.ColorScheme,
-) (*ExportConfigJson, error) {
-	var configJson ExportConfigJson
+) (*ExportConfigJSON, error) {
+	var configJSON ExportConfigJSON
 
 	if utils.Contains(scope, "synonyms") {
 		rawSynonyms, err := GetSynonyms(client, index)
@@ -65,7 +65,7 @@ func GetIndexConfig(
 				err,
 			)
 		}
-		configJson.Synonyms = rawSynonyms
+		configJSON.Synonyms = rawSynonyms
 	}
 
 	if utils.Contains(scope, "rules") {
@@ -77,7 +77,7 @@ func GetIndexConfig(
 				err,
 			)
 		}
-		configJson.Rules = rawRules
+		configJSON.Rules = rawRules
 	}
 
 	if utils.Contains(scope, "settings") {
@@ -89,12 +89,12 @@ func GetIndexConfig(
 				err,
 			)
 		}
-		configJson.Settings = rawSettings
+		configJSON.Settings = rawSettings
 	}
 
-	if len(configJson.Rules) == 0 && len(configJson.Synonyms) == 0 && configJson.Settings == nil {
+	if len(configJSON.Rules) == 0 && len(configJSON.Synonyms) == 0 && configJSON.Settings == nil {
 		return nil, fmt.Errorf("%s No config to export", cs.FailureIcon())
 	}
 
-	return &configJson, nil
+	return &configJSON, nil
 }

@@ -73,7 +73,7 @@ func NewSaveCmd(f *cmdutil.Factory, runF func(*SaveOptions) error) *cobra.Comman
 			}
 			opts.Synonym = *synonym
 
-			err, successMessage := GetSuccessMessage(*flags, opts.Index)
+			successMessage, err := GetSuccessMessage(*flags, opts.Index)
 			if err != nil {
 				return err
 			}

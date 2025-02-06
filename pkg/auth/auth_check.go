@@ -29,15 +29,16 @@ var WriteAPIKeyDefaultACLs = []string{
 
 // errMissingACLs return an error with the missing ACLs
 func errMissingACLs(missing []string) error {
-	err := fmt.Sprintf("Missing API Key ACL(s): %s\n", strings.Join(missing, ", "))
-	err += "Either edit your profile or use the `--api-key` flag to provide an API Key with the missing ACLs.\n"
-	err += "See https://www.algolia.com/doc/guides/security/api-keys/#rights-and-restrictions for more information.\n"
+	err := fmt.Sprintf("Missing API key ACL(s): %s\n", strings.Join(missing, ", "))
+	err += "Edit your profile or use the `--api-key` flag to provide an API key with the missing ACLs.\n"
+	err += "See https://www.algolia.com/doc/guides/security/api-keys/#rights-and-restrictions for more information"
+
 	return errors.New(err)
 }
 
 // errAdminAPIKeyRequired is returned when the command requires an admin API Key
 var errAdminAPIKeyRequired = errors.New(
-	"This command requires an admin API Key. Please use the `--api-key` flag to provide a valid admin API Key.\n",
+	"this command requires an admin API key. Use the `--api-key` flag with a valid admin API key",
 )
 
 func DisableAuthCheck(cmd *cobra.Command) {

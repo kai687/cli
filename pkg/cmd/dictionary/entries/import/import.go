@@ -241,7 +241,7 @@ func createDictionaryEntry(
 			return nil, fmt.Errorf("words is missing")
 		}
 		if entry.Language == nil {
-			return nil, fmt.Errorf("language is missing.")
+			return nil, fmt.Errorf("language is missing")
 		}
 		return search.NewDictionaryEntry(
 			entry.ObjectID,
@@ -269,5 +269,5 @@ func createDictionaryEntry(
 		), nil
 	}
 
-	return nil, fmt.Errorf("Wrong dictionary name")
+	return nil, fmt.Errorf("wrong dictionary name")
 }

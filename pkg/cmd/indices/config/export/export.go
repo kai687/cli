@@ -97,12 +97,12 @@ func runExportCmd(opts *config.ExportOptions) error {
 		return err
 	}
 
-	configJson, err := indexConfig.GetIndexConfig(client, opts.Index, opts.Scope, cs)
+	configJSON, err := indexConfig.GetIndexConfig(client, opts.Index, opts.Scope, cs)
 	if err != nil {
 		return err
 	}
 
-	configJsonIndented, err := json.MarshalIndent(configJson, "", "  ")
+	configJSONIndented, err := json.MarshalIndent(configJSON, "", "  ")
 	if err != nil {
 		return fmt.Errorf(
 			"%s An error occurred when creating the config json: %w",
@@ -117,7 +117,7 @@ func runExportCmd(opts *config.ExportOptions) error {
 		client.GetConfiguration().AppID,
 	)
 	// Gosec wants permissions of 0600 or less, but I don't want to change it
-	err = os.WriteFile(filePath, configJsonIndented, 0o644) // nolint:gosec
+	err = os.WriteFile(filePath, configJSONIndented, 0o644) // nolint:gosec
 	if err != nil {
 		return fmt.Errorf("%s An error occurred when saving the file: %w", cs.FailureIcon(), err)
 	}

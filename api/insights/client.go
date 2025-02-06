@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/algolia/algoliasearch-client-go/v4/algolia/insights"
 	algoliaInsights "github.com/algolia/algoliasearch-client-go/v4/algolia/insights"
 	"github.com/algolia/algoliasearch-client-go/v4/algolia/transport"
 	"github.com/algolia/cli/pkg/version"
@@ -24,9 +23,9 @@ func NewClient(appID, apiKey string, region algoliaInsights.Region) (*Client, er
 		return nil, err
 	}
 	if userAgent == "" {
-		return nil, fmt.Errorf("User agent info must not be empty")
+		return nil, fmt.Errorf("user agent info must not be empty")
 	}
-	clientConfig := insights.InsightsConfiguration{
+	clientConfig := algoliaInsights.InsightsConfiguration{
 		Configuration: transport.Configuration{
 			AppID:     appID,
 			ApiKey:    apiKey,

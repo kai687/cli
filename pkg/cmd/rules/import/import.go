@@ -1,4 +1,4 @@
-package importRules
+package importrules
 
 import (
 	"bufio"
@@ -30,7 +30,7 @@ type ImportOptions struct {
 	DoConfirm bool
 }
 
-// NewImportCmd creates and returns an import command for indice rules
+// NewImportCmd creates and returns an import command for index rules
 func NewImportCmd(f *cmdutil.Factory, runF func(*ImportOptions) error) *cobra.Command {
 	opts := &ImportOptions{
 		IO:           f.IOStreams,

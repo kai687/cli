@@ -47,7 +47,7 @@ func searchClient(f *cmdutil.Factory, appVersion string) func() (*search.APIClie
 			return nil, err
 		}
 		if userAgent == "" {
-			return nil, fmt.Errorf("User agent must not be empty")
+			return nil, fmt.Errorf("user agent must not be empty")
 		}
 
 		clientConf := search.SearchConfiguration{

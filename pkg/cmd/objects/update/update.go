@@ -253,7 +253,7 @@ func IsValidUpdate(obj map[string]any) error {
 			if op, ok := nested["_operation"]; ok {
 				if !IsAllowedOperation(op.(string)) {
 					return fmt.Errorf(
-						"Invalid operation \"%s\" for attribute \"%s\". Allowed operations: %s",
+						"invalid operation \"%s\" for attribute \"%s\". Allowed operations: %s",
 						op,
 						name,
 						strings.Join(allowedOps, ", "),

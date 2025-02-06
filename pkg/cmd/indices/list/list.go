@@ -104,11 +104,11 @@ func runListCmd(opts *ListOptions) error {
 		}
 		updatedAt, err := parseTime(index.UpdatedAt)
 		if err != nil {
-			return fmt.Errorf("can't parse %s into a time struct.", index.UpdatedAt)
+			return fmt.Errorf("can't parse %s into a time struct", index.UpdatedAt)
 		}
 		createdAt, err := parseTime(index.CreatedAt)
 		if err != nil {
-			return fmt.Errorf("can't parse %s into a time struct.", index.CreatedAt)
+			return fmt.Errorf("can't parse %s into a time struct", index.CreatedAt)
 		}
 		// Prevent integer overflow
 		if index.DataSize < 0 {

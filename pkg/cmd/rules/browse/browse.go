@@ -75,7 +75,7 @@ func runListCmd(opts *ExportOptions) error {
 		return err
 	}
 	if !exists {
-		return fmt.Errorf("Index %s doesn't exist.", opts.Index)
+		return fmt.Errorf("index %s doesn't exist", opts.Index)
 	}
 
 	p, err := opts.PrintFlags.ToPrinter()

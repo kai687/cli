@@ -2,3 +2,4 @@ linters:
   enable:
     - gosec
     - gofumpt
+    - stylecheck

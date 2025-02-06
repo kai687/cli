@@ -62,7 +62,7 @@ func AskExportConfig(opts *ExportOptions) error {
 
 // Matching Algolia Dashboard file naming
 // https://github.com/algolia/AlgoliaWeb/blob/develop/_client/src/routes/explorer/components/Explorer/IndexExportSettingsModal.tsx#L88
-func GetConfigFileName(path string, indexName string, appId string) string {
+func GetConfigFileName(path string, indexName string, appID string) string {
 	rootPath := ""
 	if path != "" {
 		rootPath = path + "/"
@@ -72,7 +72,7 @@ func GetConfigFileName(path string, indexName string, appId string) string {
 		"%sexport-%s-%s-%s.json",
 		rootPath,
 		indexName,
-		appId,
+		appID,
 		strconv.FormatInt(time.Now().UTC().Unix(), 10),
 	)
 }
@@ -83,7 +83,7 @@ type ImportOptions struct {
 
 	SearchClient func() (*search.APIClient, error)
 
-	ImportConfig ImportConfigJson
+	ImportConfig ImportConfigJSON
 
 	Index                 string
 	FilePath              string
@@ -98,7 +98,7 @@ type ImportOptions struct {
 	DoConfirm bool
 }
 
-type ImportConfigJson struct {
+type ImportConfigJSON struct {
 	Settings *search.IndexSettings `json:"settings,omitempty"`
 	Rules    []search.Rule         `json:"rules,omitempty"`
 	Synonyms []search.SynonymHit   `json:"synonyms,omitempty"`
@@ -241,8 +241,8 @@ func AskImportConfig(opts *ImportOptions) error {
 	return nil
 }
 
-func readConfigFromFile(cs *iostreams.ColorScheme, filePath string) (*ImportConfigJson, error) {
-	var config *ImportConfigJson
+func readConfigFromFile(cs *iostreams.ColorScheme, filePath string) (*ImportConfigJSON, error) {
+	var config *ImportConfigJSON
 
 	jsonFile, err := os.Open(filePath)
 	if err != nil {

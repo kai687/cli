@@ -91,7 +91,7 @@ func Test_GetSynonymSuccessMessage(t *testing.T) {
 				IOStreams: io,
 			}
 
-			err, message := GetSuccessMessage(tt.synonymFlags, tt.saveOptions.Index)
+			message, err := GetSuccessMessage(tt.synonymFlags, tt.saveOptions.Index)
 
 			assert.Equal(t, err, nil)
 			assert.Equal(
