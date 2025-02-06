@@ -1,0 +1,19 @@
+# Test algolia indices list is empty
+exec algolia indices list
+! stderr .
+stdout ^$
+
+# Create a new index
+exec algolia settings set test-index --searchableAttributes "foo"
+! stderr .
+
+# Retrieve the index settings
+exec algolia settings get test-index
+stdout '"foo"'
+
+# Test that index is listed
+exec algolia indices list
+stdout test-index
+
+# Cleanup
+exec algolia indices delete test-index --confirm
