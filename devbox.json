@@ -6,6 +6,7 @@
     "golangci-lint@1.63.4",
     "gofumpt@latest",
     "golines@latest",
-    "gh@latest"
+    "gh@latest",
+    "curl@latest"
   ]
 }
