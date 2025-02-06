@@ -2,7 +2,7 @@ package telemetry
 
 import (
 	"context"
-	"crypto/md5"
+	"crypto/md5" // nolint:gosec
 	"fmt"
 	"log"
 	"net"
@@ -82,7 +82,7 @@ func anonymousID() string {
 		}
 		a := a.HardwareAddr.String()
 		if a != "" {
-			return fmt.Sprintf("%x", md5.Sum([]byte(a)))
+			return fmt.Sprintf("%x", md5.Sum([]byte(a))) // nolint:gosec
 		}
 	}
 	return ""

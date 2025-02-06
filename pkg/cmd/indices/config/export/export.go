@@ -116,7 +116,8 @@ func runExportCmd(opts *config.ExportOptions) error {
 		opts.Index,
 		client.GetConfiguration().AppID,
 	)
-	err = os.WriteFile(filePath, configJsonIndented, 0o644)
+	// Gosec wants permissions of 0600 or less, but I don't want to change it
+	err = os.WriteFile(filePath, configJsonIndented, 0o644) // nolint:gosec
 	if err != nil {
 		return fmt.Errorf("%s An error occurred when saving the file: %w", cs.FailureIcon(), err)
 	}

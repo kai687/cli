@@ -110,6 +110,10 @@ func runListCmd(opts *ListOptions) error {
 		if err != nil {
 			return fmt.Errorf("can't parse %s into a time struct.", index.CreatedAt)
 		}
+		// Prevent integer overflow
+		if index.DataSize < 0 {
+			index.DataSize = 0
+		}
 		table.AddField(index.Name, nil, nil)
 		table.AddField(humanize.Comma(int64(index.Entries)), nil, nil)
 		table.AddField(humanize.Bytes(uint64(index.DataSize)), nil, nil)
