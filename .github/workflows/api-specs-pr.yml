@@ -10,7 +10,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.23"
+          go-version: 1.23
       - run: make api-specs-pr
         env:
           GH_TOKEN: ${{ secrets.GH_SECRET }}
