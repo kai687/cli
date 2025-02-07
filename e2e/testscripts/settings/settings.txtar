@@ -3,13 +3,12 @@ exec algolia settings import test-settings --file settings.json --wait
 ! stderr .
 ! stdout .
 
+# Cleanup
+defer algolia indices delete test-settings --confirm
+
 # Test that the correct setting is applied
 exec algolia settings get test-settings
-stdout "foo"
-
-# Cleanup
-exec algolia indices delete test-settings --confirm
-! stderr .
+stdout -count=1 '"searchableAttributes":\["foo"\]'
 
 -- settings.json --
 {"searchableAttributes": ["foo"]}

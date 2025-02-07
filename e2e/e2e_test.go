@@ -63,13 +63,39 @@ func (e *testEnvironment) getEnv() error {
 	return nil
 }
 
+// For the `defer` function
+var keyT struct{}
+
 // setupEnv sets up the environment variables for the test
 func setupEnv(testEnv testEnvironment) func(ts *testscript.Env) error {
 	return func(ts *testscript.Env) error {
 		ts.Setenv("ALGOLIA_APPLICATION_ID", testEnv.AppID)
 		ts.Setenv("ALGOLIA_API_KEY", testEnv.ApiKey)
 
+		ts.Values[keyT] = ts.T()
 		return nil
+	}
+}
+
+// setupCmds sets up custom commands we want to make available in the test scripts
+func setupCmds(
+	testEnv testEnvironment,
+) map[string]func(ts *testscript.TestScript, neg bool, args []string) {
+	return map[string]func(ts *testscript.TestScript, neg bool, args []string){
+		"defer": func(ts *testscript.TestScript, neg bool, args []string) {
+			if neg {
+				ts.Fatalf("unsupported ! defer")
+			}
+			tt, ok := ts.Value(keyT).(testscript.T)
+			if !ok {
+				ts.Fatalf("%v is not a testscript.T", ts.Value(keyT))
+			}
+			ts.Defer(func() {
+				if err := ts.Exec(args[0], args[1:]...); err != nil {
+					tt.FailNow()
+				}
+			})
+		},
 	}
 }
 
@@ -84,6 +110,7 @@ func RunTestsInDir(t *testing.T, dirName string) {
 	testscript.Run(t, testscript.Params{
 		Dir:   dirName,
 		Setup: setupEnv(testEnv),
+		Cmds:  setupCmds(testEnv),
 	})
 }
 
