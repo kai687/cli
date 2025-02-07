@@ -141,6 +141,9 @@ func runDeleteCmd(opts *DeleteOptions) error {
 	if len(taskIDs) > 0 {
 		for _, taskID := range taskIDs {
 			_, err := client.WaitForTask(opts.Index, taskID)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
