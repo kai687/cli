@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"os"
 	"testing"
 
 	"github.com/algolia/algoliasearch-client-go/v4/algolia/search"
@@ -12,6 +13,10 @@ import (
 )
 
 func Test_CheckACLs(t *testing.T) {
+	// Remove these environment variables before the tests
+	os.Unsetenv("ALGOLIA_APPLICATION_ID")
+	os.Unsetenv("ALGOLIA_API_KEY")
+
 	tests := []struct {
 		name           string
 		cmd            *cobra.Command
