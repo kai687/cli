@@ -9,5 +9,5 @@
     "gh@latest",
     "curl@latest"
   ],
-  "env_from": "testing.env"
+  "env_from": ".env"
 }

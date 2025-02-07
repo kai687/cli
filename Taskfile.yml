@@ -23,11 +23,10 @@ tasks:
     summary: |
       Run tests that mimic how user enters commands and flags.
       These tests make real requests to the Algolia API.
-      Provide your credentials with the `ALGOLIA_APPLICATION_ID`
-      and `ALGOLIA_API_KEY` environment variables.
-      If you're using devbox, add them to a `testing.env` file
-      in the main directory.
+      To run them, create a `.env` file with the `ALGOLIA_APPLICATION_ID`
+      and `ALGOLIA_API_KEY` credentials.
     cmd: go test ./e2e -tags=e2e
+    dotenv: [.env]
   lint:
     desc: Lint code
     cmd: golangci-lint run
