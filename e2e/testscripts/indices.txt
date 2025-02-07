@@ -4,10 +4,10 @@ exec algolia indices list
 stdout ^$
 
 # Create a new index
-exec algolia settings set test-index --searchableAttributes "foo"
+exec algolia settings set test-index --searchableAttributes "foo" --wait
 ! stderr .
 
-# Retrieve the index settings
+# Confirm that the index setting is set
 exec algolia settings get test-index
 stdout '"foo"'
 
@@ -15,5 +15,42 @@ stdout '"foo"'
 exec algolia indices list
 stdout test-index
 
+# Copy the index
+exec algolia indices copy test-index test-copy --wait --confirm
+! stderr .
+
+# Confirm that there are 2 indices now
+exec algolia indices list
+stdout -count=2 ^test-
+
+# Add replica indices to the copy
+exec algolia settings set test-copy --replicas 'test-replica1,test-replica2' --wait
+! stderr .
+
+# Confirm that there are 4 indices now
+exec algolia indices list
+stdout -count=4 ^test-
+
+# Delete one of the replica indices
+exec algolia indices delete test-replica1 --confirm --wait
+! stderr .
+
+# Confirm that there are 3 indices now
+exec algolia indices list
+stdout -count=3 ^test-
+
+# Confirm that the test-copy index still has 1 replica index
+exec algolia settings get test-copy
+stdout -count=1 test-replica
+
+# Delete the copy index including its replicas
+exec algolia indices delete test-copy --include-replicas --confirm --wait
+! stderr .
+
+# Confirm that there is 1 index now
+exec algolia indices list
+stdout -count=1 test-index
+
 # Cleanup
 exec algolia indices delete test-index --confirm
+! stderr .
