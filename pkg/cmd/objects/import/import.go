@@ -24,6 +24,7 @@ type ImportOptions struct {
 
 	Scanner   *bufio.Scanner
 	BatchSize int
+	Wait      bool
 }
 
 // NewImportCmd creates and returns an import command for indice object
@@ -75,6 +76,7 @@ func NewImportCmd(f *cmdutil.Factory) *cobra.Command {
 	_ = cmd.MarkFlagRequired("file")
 
 	cmd.Flags().IntVarP(&opts.BatchSize, "batch-size", "b", 1000, "Specify the upload batch size")
+	cmd.Flags().BoolVarP(&opts.Wait, "wait", "w", false, "wait for the operation to complete")
 	return cmd
 }
 
@@ -102,10 +104,22 @@ func runImportCmd(opts *ImportOptions) error {
 		count++
 	}
 
-	_, err = client.SaveObjects(opts.Index, records, search.WithBatchSize(opts.BatchSize))
+	responses, err := client.SaveObjects(opts.Index, records, search.WithBatchSize(opts.BatchSize))
 	if err != nil {
 		return err
 	}
+
+	if opts.Wait {
+		opts.IO.UpdateProgressIndicatorLabel("Waiting for the task to complete")
+		for _, res := range responses {
+			_, err := client.WaitForTask(opts.Index, res.TaskID)
+			if err != nil {
+				opts.IO.StopProgressIndicator()
+				return err
+			}
+		}
+	}
+
 	opts.IO.UpdateProgressIndicatorLabel(
 		fmt.Sprintf("Imported %d objects in %v", len(records), time.Since(elapsed)),
 	)
