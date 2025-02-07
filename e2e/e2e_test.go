@@ -73,17 +73,31 @@ func setupEnv(testEnv testEnvironment) func(ts *testscript.Env) error {
 	}
 }
 
-// Run the test scripts from the directory `testscripts`
-func TestCommands(t *testing.T) {
+// RunTestsInDir runs all test scripts from a directory
+func RunTestsInDir(t *testing.T, dirName string) {
 	var testEnv testEnvironment
 	if err := testEnv.getEnv(); err != nil {
 		t.Fatal(err)
 	}
-
 	t.Parallel()
-
+	t.Log("Running e2e tests in", dirName)
 	testscript.Run(t, testscript.Params{
-		Dir:   "testscripts",
+		Dir:   dirName,
 		Setup: setupEnv(testEnv),
 	})
+}
+
+// TestVersion tests the version option
+func TestVersion(t *testing.T) {
+	RunTestsInDir(t, "testscripts/version")
+}
+
+// TestIndices test `algolia indices` commands
+func TestIndices(t *testing.T) {
+	RunTestsInDir(t, "testscripts/indices")
+}
+
+// TestSettings tests `algolia settings` commands
+func TestSettings(t *testing.T) {
+	RunTestsInDir(t, "testscripts/settings")
 }

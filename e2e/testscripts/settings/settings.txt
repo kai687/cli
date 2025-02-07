@@ -1,0 +1,15 @@
+# Test that we can import settings from a file
+exec algolia settings import test-settings --file settings.json --wait
+! stderr .
+! stdout .
+
+# Test that the correct setting is applied
+exec algolia settings get test-settings
+stdout "foo"
+
+# Cleanup
+exec algolia indices delete test-settings --confirm
+! stderr .
+
+-- settings.json --
+{"searchableAttributes": ["foo"]}
