@@ -38,6 +38,18 @@ func Test_runImportCmd(t *testing.T) {
 			wantOut: "✓ Successfully imported 1 objects to foo in",
 		},
 		{
+			name:    "missing objectID",
+			cli:     "foo -F -",
+			stdin:   `{"attribute": "foo"}`,
+			wantErr: "missing objectID on line 0",
+		},
+		{
+			name:    "with auto-generated objectID",
+			cli:     "foo --auto-generate-object-id-if-not-exist -F -",
+			stdin:   `{"attribute": "foo"}`,
+			wantOut: "✓ Successfully imported 1 objects to foo in",
+		},
+		{
 			name:    "from stdin with invalid JSON",
 			cli:     "foo -F -",
 			stdin:   `{"objectID", "foo"},`,
