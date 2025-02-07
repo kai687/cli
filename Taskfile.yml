@@ -33,8 +33,8 @@ tasks:
   format:
     desc: Format code
     cmds:
-      - gofumpt -w pkg cmd test internal api
-      - golines -w pkg cmd test internal api
+      - gofumpt -w pkg cmd test internal api e2e
+      - golines -w pkg cmd test internal api e2e
   ci:
     desc: Test, lint, and format
     aliases:

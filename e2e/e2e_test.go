@@ -99,8 +99,8 @@ func setupCmds(
 	}
 }
 
-// RunTestsInDir runs all test scripts from a directory
-func RunTestsInDir(t *testing.T, dirName string) {
+// runTestsInDir runs all test scripts from a directory
+func runTestsInDir(t *testing.T, dirName string) {
 	var testEnv testEnvironment
 	if err := testEnv.getEnv(); err != nil {
 		t.Fatal(err)
@@ -116,15 +116,15 @@ func RunTestsInDir(t *testing.T, dirName string) {
 
 // TestVersion tests the version option
 func TestVersion(t *testing.T) {
-	RunTestsInDir(t, "testscripts/version")
+	runTestsInDir(t, "testscripts/version")
 }
 
 // TestIndices test `algolia indices` commands
 func TestIndices(t *testing.T) {
-	RunTestsInDir(t, "testscripts/indices")
+	runTestsInDir(t, "testscripts/indices")
 }
 
 // TestSettings tests `algolia settings` commands
 func TestSettings(t *testing.T) {
-	RunTestsInDir(t, "testscripts/settings")
+	runTestsInDir(t, "testscripts/settings")
 }
