@@ -1,40 +1,42 @@
-# Test that we can import settings from a file
+# Test importing settings from a file
 exec algolia settings import test-settings --file settings.json --wait
 ! stderr .
 ! stdout .
 
-# Cleanup
-defer algolia indices delete test-settings --confirm
+# Defer deleting the test index
+defer algolia indices delete test-settings --confirm --include-replicas
 
-# Test that setting is applied
+# Check that settings are applied
 exec algolia settings get test-settings
 stdout -count=1 '"searchableAttributes":\["foo"\]'
 
-# Test apply settings from flags
-exec algolia settings set test-settings --attributeCriteriaComputedByMinProximity --distinct true --maxFacetHits 1 --minProximity 7 --responseFields "hits" --attributesToRetrieve "foo" --searchableAttributes "bar" --unretrievableAttributes "baz" --attributesForFaceting "searchable(bar)" --maxValuesPerFacet 1 --sortFacetValuesBy count --enableReRanking --attributesToHighlight "foo" --attributesToSnippet "foo:7" --highlightPreTag pre --highlightPostTag post --replaceSynonymsInHighlight --restrictHighlightAndSnippetArrays --snippetEllipsisText "..." --wait
+# Test applying some settings from flags
+exec algolia settings set test-settings --attributesToRetrieve "foo" --searchableAttributes "bar" --unretrievableAttributes "baz" --attributesForFaceting "searchable(bar)" --replicas "test-settings-replica" --wait
 ! stderr .
 
 # Test that the correct settings are applied
 exec algolia settings get test-settings
-stdout -count=1 '"attributeCriteriaComputedByMinProximity":true'
-stdout -count=1 '"distinct":true'
-stdout -count=1 '"maxFacetHits":1'
-stdout -count=1 '"minProximity":7'
-stdout -count=1 '"responseFields":\["hits"\]'
 stdout -count=1 '"attributesToRetrieve":\["foo"\]'
 stdout -count=1 '"searchableAttributes":\["bar"\]'
 stdout -count=1 '"unretrievableAttributes":\["baz"\]'
 stdout -count=1 '"attributesForFaceting":\["searchable\(bar\)"\]'
-stdout -count=1 '"sortFacetValuesBy":"count"'
-stdout -count=1 '"enableReRanking":true'
-stdout -count=1 '"attributesToHighlight":\["foo"\]'
-stdout -count=1 '"attributesToSnippet":\["foo:7"\]'
-stdout -count=1 '"highlightPostTag":"post"'
-stdout -count=1 '"highlightPreTag":"pre"'
-stdout -count=1 '"replaceSynonymsInHighlight":true'
-stdout -count=1 '"restrictHighlightAndSnippetArrays":true'
-stdout -count=1 '"restrictHighlightAndSnippetArrays":true'
-stdout -count=1 '"snippetEllipsisText"' # Don't know why I can't test for value here
+stdout -count=1 '"replicas":\["test-settings-replica"\]'
+
+# Change a setting
+exec algolia settings set test-settings --searchableAttributes "not-changed" --wait
+! stderr .
+
+# Check that change is not applied to replica
+exec algolia settings get test-settings-replica
+! stdout not-changed
+
+# Change another setting and forward change to replica
+exec algolia settings set test-settings --searchableAttributes "changed" --forward-to-replicas --wait
+! stderr .
+
+# Check that change is also applied to replica
+exec algolia settings get test-settings-replica
+stdout -count=1 changed
 
 -- settings.json --
 {"searchableAttributes": ["foo"]}

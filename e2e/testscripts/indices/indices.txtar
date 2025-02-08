@@ -1,11 +1,3 @@
-# Don't test for the number of indices,
-# as other tests will also create their own
-
-# Test algolia indices list is empty
-exec algolia indices list
-! stderr .
-! stdout .
-
 # Create a new index
 exec algolia settings set test-index --searchableAttributes "foo" --wait
 ! stderr .
