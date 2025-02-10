@@ -231,3 +231,180 @@ func Test_runExportCmd(t *testing.T) {
 		})
 	}
 }
+
+func TestValidateSynonym(t *testing.T) {
+	tests := []struct {
+		name     string
+		synonym  *search.SynonymHit
+		wantsErr string
+	}{
+		{
+			name:     "Missing objectID",
+			synonym:  search.NewEmptySynonymHit(),
+			wantsErr: "objectID required for synonym",
+		},
+		{
+			name:     "Missing synonym type",
+			synonym:  search.NewEmptySynonymHit().SetObjectID("test"),
+			wantsErr: "synonym type required",
+		},
+		{
+			name:     "Missing synonyms",
+			synonym:  search.NewEmptySynonymHit().SetObjectID("test").SetType("synonym"),
+			wantsErr: "`synonyms` property required for regular synonym",
+		},
+		{
+			name: "Valid regular synonym",
+			synonym: search.NewEmptySynonymHit().
+				SetObjectID("test").
+				SetType("synonym").
+				SetSynonyms([]string{"foo"}),
+			wantsErr: "",
+		},
+		{
+			name:     "Missing input (one-way)",
+			synonym:  search.NewEmptySynonymHit().SetObjectID("test").SetType("oneWaySynonym"),
+			wantsErr: "`input` property required for one-way synonym",
+		},
+		{
+			name: "Missing synonyms (one-way)",
+			synonym: search.NewEmptySynonymHit().
+				SetObjectID("test").
+				SetType("oneWaySynonym").
+				SetInput("foo"),
+			wantsErr: "`synonyms` property required for one-way synonym",
+		},
+		{
+			name: "Valid one-way synonym",
+			synonym: search.NewEmptySynonymHit().
+				SetObjectID("test").
+				SetType("oneWaySynonym").
+				SetInput("foo").SetSynonyms([]string{"bar", "baz"}),
+			wantsErr: "",
+		},
+		{
+			name: "Valid one-way synonym (alternative spelling)",
+			synonym: search.NewEmptySynonymHit().
+				SetObjectID("test").
+				SetType("onewaysynonym").
+				SetInput("foo").SetSynonyms([]string{"bar", "baz"}),
+			wantsErr: "",
+		},
+		{
+			name:     "Missing placeholder",
+			synonym:  search.NewEmptySynonymHit().SetObjectID("test").SetType("placeholder"),
+			wantsErr: "`placeholder` property required for placeholder synonym",
+		},
+		{
+			name: "Missing replacements",
+			synonym: search.NewEmptySynonymHit().
+				SetObjectID("test").
+				SetType("placeholder").
+				SetPlaceholder("foo"),
+			wantsErr: "`replacements` property required for placeholder synonym",
+		},
+		{
+			name: "Valid placeholder synonym",
+			synonym: search.NewEmptySynonymHit().
+				SetObjectID("test").
+				SetType("placeholder").
+				SetPlaceholder("foo").SetReplacements([]string{"bar", "baz"}),
+			wantsErr: "",
+		},
+		{
+			name:     "Missing word (alt-correction 1)",
+			synonym:  search.NewEmptySynonymHit().SetObjectID("test").SetType("altCorrection1"),
+			wantsErr: "`word` property required for alt-correction synonym",
+		},
+		{
+			name:     "Missing word (alt-correction 1, alternative spelling)",
+			synonym:  search.NewEmptySynonymHit().SetObjectID("test").SetType("altcorrection1"),
+			wantsErr: "`word` property required for alt-correction synonym",
+		},
+		{
+			name:     "Missing word (alt-correction 2)",
+			synonym:  search.NewEmptySynonymHit().SetObjectID("test").SetType("altCorrection2"),
+			wantsErr: "`word` property required for alt-correction synonym",
+		},
+		{
+			name:     "Missing word (alt-correction 2, alternative spelling)",
+			synonym:  search.NewEmptySynonymHit().SetObjectID("test").SetType("altcorrection2"),
+			wantsErr: "`word` property required for alt-correction synonym",
+		},
+		{
+			name: "Missing corrections (alt-correction 1)",
+			synonym: search.NewEmptySynonymHit().
+				SetObjectID("test").
+				SetType("altCorrection1").
+				SetWord("foo"),
+			wantsErr: "`corrections` property required for alt-correction synonym",
+		},
+		{
+			name: "Missing corrections (alt-correction 1, alternative spelling)",
+			synonym: search.NewEmptySynonymHit().
+				SetObjectID("test").
+				SetType("altcorrection1").
+				SetWord("foo"),
+			wantsErr: "`corrections` property required for alt-correction synonym",
+		},
+		{
+			name: "Missing corrections (alt-correction 2)",
+			synonym: search.NewEmptySynonymHit().
+				SetObjectID("test").
+				SetType("altCorrection2").
+				SetWord("foo"),
+			wantsErr: "`corrections` property required for alt-correction synonym",
+		},
+		{
+			name: "Missing corrections (alt-correction 2, alternative spelling)",
+			synonym: search.NewEmptySynonymHit().
+				SetObjectID("test").
+				SetType("altcorrection2").
+				SetWord("foo"),
+			wantsErr: "`corrections` property required for alt-correction synonym",
+		},
+		{
+			name: "Valid alt correction 1 synonym",
+			synonym: search.NewEmptySynonymHit().
+				SetObjectID("test").
+				SetType("altCorrection1").
+				SetWord("foo").SetCorrections([]string{"bar", "baz"}),
+			wantsErr: "",
+		},
+		{
+			name: "Valid alt correction 1 synonym (alternative spelling)",
+			synonym: search.NewEmptySynonymHit().
+				SetObjectID("test").
+				SetType("altCorrection1").
+				SetWord("foo").SetCorrections([]string{"bar", "baz"}),
+			wantsErr: "",
+		},
+		{
+			name: "Valid alt correction 2 synonym",
+			synonym: search.NewEmptySynonymHit().
+				SetObjectID("test").
+				SetType("altCorrection2").
+				SetWord("foo").SetCorrections([]string{"bar", "baz"}),
+			wantsErr: "",
+		},
+		{
+			name: "Valid alt correction 2 synonym (alternative spelling)",
+			synonym: search.NewEmptySynonymHit().
+				SetObjectID("test").
+				SetType("altCorrection2").
+				SetWord("foo").SetCorrections([]string{"bar", "baz"}),
+			wantsErr: "",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := validateSynonym(*tt.synonym)
+			if tt.wantsErr == "" {
+				assert.Equal(t, nil, err)
+			} else {
+				assert.EqualError(t, err, tt.wantsErr)
+			}
+		})
+	}
+}

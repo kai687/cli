@@ -28,7 +28,7 @@ type ImportOptions struct {
 	Scanner                 *bufio.Scanner
 }
 
-// NewImportCmd creates and returns an import command for indice synonyms
+// NewImportCmd creates and returns an import command for synonyms
 func NewImportCmd(f *cmdutil.Factory, runF func(*ImportOptions) error) *cobra.Command {
 	opts := &ImportOptions{
 		IO:           f.IOStreams,
@@ -126,8 +126,12 @@ func runImportCmd(opts *ImportOptions) error {
 
 		// Unmarshal as map[string]interface{} to get the type of the synonym
 		if err := json.Unmarshal(lineB, &synonym); err != nil {
-			err := fmt.Errorf("failed to parse JSON synonym on line %d: %s", count, err)
-			return err
+			return fmt.Errorf("failed to parse JSON synonym on line %d: %s", count, err)
+		}
+
+		err = validateSynonym(synonym)
+		if err != nil {
+			return fmt.Errorf("%s on line %d", err, count)
 		}
 
 		synonyms = append(synonyms, synonym)
@@ -204,6 +208,48 @@ func runImportCmd(opts *ImportOptions) error {
 			cs.Bold(fmt.Sprint(totalCount)),
 			opts.Index,
 		)
+	}
+
+	return nil
+}
+
+// validateSynonym validates a synonym before making an API request
+func validateSynonym(syn search.SynonymHit) error {
+	if syn.ObjectID == "" {
+		return fmt.Errorf("objectID required for synonym")
+	}
+
+	switch syn.Type {
+	case "":
+		return fmt.Errorf("synonym type required")
+	case search.SYNONYM_TYPE_SYNONYM:
+		if len(syn.Synonyms) == 0 {
+			return fmt.Errorf("`synonyms` property required for regular synonym")
+		}
+	case search.SYNONYM_TYPE_ONE_WAY_SYNONYM, search.SYNONYM_TYPE_ONEWAYSYNONYM:
+		if syn.Input == nil {
+			return fmt.Errorf("`input` property required for one-way synonym")
+		}
+		if len(syn.Synonyms) == 0 {
+			return fmt.Errorf("`synonyms` property required for one-way synonym")
+		}
+	case search.SYNONYM_TYPE_PLACEHOLDER:
+		if syn.Placeholder == nil {
+			return fmt.Errorf("`placeholder` property required for placeholder synonym")
+		}
+		if len(syn.Replacements) == 0 {
+			return fmt.Errorf("`replacements` property required for placeholder synonym")
+		}
+	case search.SYNONYM_TYPE_ALTCORRECTION1,
+		search.SYNONYM_TYPE_ALT_CORRECTION1,
+		search.SYNONYM_TYPE_ALTCORRECTION2,
+		search.SYNONYM_TYPE_ALT_CORRECTION2:
+		if syn.Word == nil {
+			return fmt.Errorf("`word` property required for alt-correction synonym")
+		}
+		if len(syn.Corrections) == 0 {
+			return fmt.Errorf("`corrections` property required for alt-correction synonym")
+		}
 	}
 
 	return nil
