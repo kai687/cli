@@ -22,12 +22,20 @@ type SynonymFlags struct {
 type SynonymType string
 
 const (
-	// "synonym"
-	Regular        string = string(search.SYNONYM_TYPE_SYNONYM)
-	OneWay         string = string(search.SYNONYM_TYPE_ONE_WAY_SYNONYM)
+	Regular string = string(search.SYNONYM_TYPE_SYNONYM)
+	// oneWaySynonym
+	OneWay string = string(search.SYNONYM_TYPE_ONE_WAY_SYNONYM)
+	// onewaysynonym
+	AltOneWay string = string(search.SYNONYM_TYPE_ONEWAYSYNONYM)
+	// altCorrection1
 	AltCorrection1 string = string(search.SYNONYM_TYPE_ALT_CORRECTION1)
+	// altcorrection1
+	AltAltCorrection1 string = string(search.SYNONYM_TYPE_ALTCORRECTION1)
+	// altCorrection2
 	AltCorrection2 string = string(search.SYNONYM_TYPE_ALT_CORRECTION2)
-	Placeholder    string = string(search.SYNONYM_TYPE_PLACEHOLDER)
+	// altcorrection2
+	AltAltCorrection2 string = string(search.SYNONYM_TYPE_ALTCORRECTION2)
+	Placeholder       string = string(search.SYNONYM_TYPE_PLACEHOLDER)
 )
 
 func (e *SynonymType) String() string {
@@ -41,7 +49,14 @@ func (e *SynonymType) Set(v string) error {
 	}
 
 	switch v {
-	case Regular, OneWay, AltCorrection1, AltCorrection2, Placeholder:
+	case Regular,
+		OneWay,
+		AltCorrection1,
+		AltCorrection2,
+		Placeholder,
+		AltOneWay,
+		AltAltCorrection1,
+		AltAltCorrection2:
 		*e = SynonymType(v)
 		return nil
 	default:
@@ -57,21 +72,21 @@ func (e *SynonymType) Type() string {
 
 func FlagsToSynonym(flags SynonymFlags) (*search.SynonymHit, error) {
 	switch flags.SynonymType {
-	case OneWay:
+	case OneWay, AltOneWay:
 		return search.NewEmptySynonymHit().
 				SetType(search.SYNONYM_TYPE_ONE_WAY_SYNONYM).
 				SetObjectID(flags.SynonymID).
 				SetInput(flags.SynonymInput).
 				SetSynonyms(flags.Synonyms),
 			nil
-	case AltCorrection1:
+	case AltCorrection1, AltAltCorrection1:
 		return search.NewEmptySynonymHit().
 				SetType(search.SYNONYM_TYPE_ALT_CORRECTION1).
 				SetObjectID(flags.SynonymID).
 				SetWord(flags.SynonymWord).
 				SetCorrections(flags.SynonymCorrections),
 			nil
-	case AltCorrection2:
+	case AltCorrection2, AltAltCorrection2:
 		return search.NewEmptySynonymHit().
 				SetType(search.SYNONYM_TYPE_ALT_CORRECTION2).
 				SetObjectID(flags.SynonymID).

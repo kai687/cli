@@ -44,6 +44,19 @@ func Test_GetSynonymSuccessMessage(t *testing.T) {
 			wantsOutput: "✓ One way synonym '23' successfully saved with input 'michael' and 2 synonyms (mj, goat) to legends\n",
 		},
 		{
+			name: "Save one way synonym (alt. spelling)",
+			synonymFlags: shared.SynonymFlags{
+				SynonymType:  shared.AltOneWay,
+				SynonymID:    "23",
+				Synonyms:     []string{"mj", "goat"},
+				SynonymInput: "michael",
+			},
+			saveOptions: SaveOptions{
+				Index: "legends",
+			},
+			wantsOutput: "✓ One way synonym '23' successfully saved with input 'michael' and 2 synonyms (mj, goat) to legends\n",
+		},
+		{
 			name: "Save placeholder synonym",
 			synonymFlags: shared.SynonymFlags{
 				SynonymType:         shared.Placeholder,
@@ -70,9 +83,35 @@ func Test_GetSynonymSuccessMessage(t *testing.T) {
 			wantsOutput: "✓ Alt correction 1 synonym '23' successfully saved with word 'michael' and 2 corrections (mj, goat) to legends\n",
 		},
 		{
+			name: "Save alt correction 1 synonym (alt. spelling)",
+			synonymFlags: shared.SynonymFlags{
+				SynonymType:        shared.AltAltCorrection1,
+				SynonymID:          "23",
+				SynonymCorrections: []string{"mj", "goat"},
+				SynonymWord:        "michael",
+			},
+			saveOptions: SaveOptions{
+				Index: "legends",
+			},
+			wantsOutput: "✓ Alt correction 1 synonym '23' successfully saved with word 'michael' and 2 corrections (mj, goat) to legends\n",
+		},
+		{
 			name: "Save alt correction 2 synonym",
 			synonymFlags: shared.SynonymFlags{
 				SynonymType:        shared.AltCorrection2,
+				SynonymID:          "23",
+				SynonymCorrections: []string{"mj", "goat"},
+				SynonymWord:        "michael",
+			},
+			saveOptions: SaveOptions{
+				Index: "legends",
+			},
+			wantsOutput: "✓ Alt correction 2 synonym '23' successfully saved with word 'michael' and 2 corrections (mj, goat) to legends\n",
+		},
+		{
+			name: "Save alt correction 2 synonym (alt. correction 2)",
+			synonymFlags: shared.SynonymFlags{
+				SynonymType:        shared.AltAltCorrection2,
 				SynonymID:          "23",
 				SynonymCorrections: []string{"mj", "goat"},
 				SynonymWord:        "michael",

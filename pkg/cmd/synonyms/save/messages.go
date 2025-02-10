@@ -35,7 +35,7 @@ func GetSuccessMessage(flags shared.SynonymFlags, index string) (string, error) 
 	}
 
 	switch flags.SynonymType {
-	case shared.OneWay:
+	case shared.OneWay, shared.AltOneWay:
 		successMessage = SuccessMessage{
 			Type: "One way synonym",
 			ID:   flags.SynonymID,
@@ -55,9 +55,13 @@ func GetSuccessMessage(flags shared.SynonymFlags, index string) (string, error) 
 				strings.Join(flags.SynonymReplacements, ", ")),
 			Index: index,
 		}
-	case shared.AltCorrection1, shared.AltCorrection2:
+	case shared.AltCorrection1,
+		shared.AltCorrection2,
+		shared.AltAltCorrection1,
+		shared.AltAltCorrection2:
 		altCorrectionType := "1"
-		if flags.SynonymType == shared.AltCorrection2 {
+		if flags.SynonymType == shared.AltCorrection2 ||
+			flags.SynonymType == shared.AltAltCorrection2 {
 			altCorrectionType = "2"
 		}
 		altCorrectionType = "Alt correction " + altCorrectionType + " synonym"

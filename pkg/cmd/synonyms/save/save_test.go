@@ -137,6 +137,14 @@ func Test_runSaveCmd(t *testing.T) {
 			wantOut:   "✓ One way synonym '1' successfully saved with input '23' and 4 synonyms (jordan, mj, goat, michael) to legends\n",
 		},
 		{
+			name:      "single id,  one-way-synonym type (alt. spelling), multiple synonyms, TTY",
+			cli:       "legends --id 1 --type onewaysynonym --synonyms jordan,mj,goat,michael --input 23",
+			index:     "legends",
+			synonymID: "1",
+			isTTY:     true,
+			wantOut:   "✓ One way synonym '1' successfully saved with input '23' and 4 synonyms (jordan, mj, goat, michael) to legends\n",
+		},
+		{
 			name:      "single id, placeholder type, one placeholder, multiple replacements, TTY",
 			cli:       "legends -i 1 -t placeholder -l jordan -r mj,goat,michael,23",
 			index:     "legends",
@@ -151,6 +159,30 @@ func Test_runSaveCmd(t *testing.T) {
 			synonymID: "1",
 			isTTY:     true,
 			wantOut:   "✓ Alt correction 1 synonym '1' successfully saved with word 'jordan' and 4 corrections (mj, goat, michael, 23) to legends\n",
+		},
+		{
+			name:      "single id, altcorrection1 type (alt. spelling), one word, multiple corrections, TTY",
+			cli:       "legends -i 1 -t altCorrection1 -w jordan -c mj,goat,michael,23",
+			index:     "legends",
+			synonymID: "1",
+			isTTY:     true,
+			wantOut:   "✓ Alt correction 1 synonym '1' successfully saved with word 'jordan' and 4 corrections (mj, goat, michael, 23) to legends\n",
+		},
+		{
+			name:      "single id, altcorrection2 type, one word, multiple corrections, TTY",
+			cli:       "legends -i 1 -t altCorrection2 -w jordan -c mj,goat,michael,23",
+			index:     "legends",
+			synonymID: "1",
+			isTTY:     true,
+			wantOut:   "✓ Alt correction 2 synonym '1' successfully saved with word 'jordan' and 4 corrections (mj, goat, michael, 23) to legends\n",
+		},
+		{
+			name:      "single id, altcorrection2 type (alt. spelling), one word, multiple corrections, TTY",
+			cli:       "legends -i 1 -t altcorrection2 -w jordan -c mj,goat,michael,23",
+			index:     "legends",
+			synonymID: "1",
+			isTTY:     true,
+			wantOut:   "✓ Alt correction 2 synonym '1' successfully saved with word 'jordan' and 4 corrections (mj, goat, michael, 23) to legends\n",
 		},
 	}
 
