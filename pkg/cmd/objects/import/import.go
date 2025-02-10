@@ -100,13 +100,18 @@ func runImportCmd(opts *ImportOptions) error {
 		}
 		var record map[string]any
 		if err := json.Unmarshal([]byte(line), &record); err != nil {
-			err := fmt.Errorf("failed to parse JSON object on line %d: %s", count, err)
-			return err
+			opts.IO.StopProgressIndicator()
+			return fmt.Errorf("failed to parse JSON object on line %d: %s", count, err)
 		}
-		// The API client doesn't support this flag since v4
-		// The API always automatically generates objectIDs
-		// if you pass in records without them
-		// Implement it here to avoid breaking changes
+
+		if len(record) == 0 {
+			opts.IO.StopProgressIndicator()
+			return fmt.Errorf("empty object on line %d", count)
+		}
+
+		// The API always generates object IDs for the batch endpoint
+		// Version 3 of the Go API client implemented this option,
+		// but not version 4. Implement it here.
 		if !opts.AutoObjectIDs {
 			if _, ok := record["objectID"]; !ok {
 				return fmt.Errorf("missing objectID on line %d", count)

@@ -38,6 +38,12 @@ func Test_runImportCmd(t *testing.T) {
 			wantOut: "✓ Successfully imported 1 objects to foo in",
 		},
 		{
+			name:    "empty record",
+			cli:     "foo -F -",
+			stdin:   `{}`,
+			wantErr: "empty object on line 0",
+		},
+		{
 			name:    "missing objectID",
 			cli:     "foo -F -",
 			stdin:   `{"attribute": "foo"}`,
