@@ -43,6 +43,7 @@ tasks:
       - build
       - test
       - lint
+      - format
   api-specs-pr:
     desc: Update the flags for search and settings from the latest Search API spec
     summary: |
