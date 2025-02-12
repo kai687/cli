@@ -148,3 +148,8 @@ func TestRules(t *testing.T) {
 func TestSearch(t *testing.T) {
 	runTestsInDir(t, "testscripts/search")
 }
+
+// TestLogs tests `algolia logs` commands
+func TestLogs(t *testing.T) {
+	runTestsInDir(t, "testscripts/logs")
+}
