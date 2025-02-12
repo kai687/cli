@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
+	"github.com/segmentio/analytics-go/v3"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/require"
-	"gopkg.in/segmentio/analytics-go.v3"
 )
 
 // Context-related tests.

@@ -8,10 +8,10 @@ import (
 	"net"
 	"runtime"
 
+	"github.com/segmentio/analytics-go/v3"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/xtgo/uuid"
-	"gopkg.in/segmentio/analytics-go.v3"
 
 	"github.com/algolia/cli/pkg/utils"
 	"github.com/algolia/cli/pkg/version"
