@@ -41,7 +41,7 @@ func NewBrowseCmd(f *cmdutil.Factory, runF func(*BrowseOptions) error) *cobra.Co
 	cmd := &cobra.Command{
 		Use:       "browse {<dictionary>... | --all} [--include-defaults]",
 		Args:      cobra.OnlyValidArgs,
-		Aliases:   []string{"list"},
+		Aliases:   []string{"list", "l"},
 		ValidArgs: shared.DictionaryTypes(),
 		ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 			return shared.DictionaryTypes(), cobra.ShellCompDirectiveNoFileComp

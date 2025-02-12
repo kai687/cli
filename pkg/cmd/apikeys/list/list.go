@@ -34,8 +34,9 @@ func NewListCmd(f *cmdutil.Factory, runF func(*ListOptions) error) *cobra.Comman
 		PrintFlags:   cmdutil.NewPrintFlags(),
 	}
 	cmd := &cobra.Command{
-		Use:  "list",
-		Args: validators.NoArgs(),
+		Use:     "list",
+		Aliases: []string{"l"},
+		Args:    validators.NoArgs(),
 		Annotations: map[string]string{
 			"acls": "admin",
 		},

@@ -35,10 +35,10 @@ func NewBrowseCmd(f *cmdutil.Factory) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:               "browse <index>",
-		Aliases:           []string{"list"},
+		Aliases:           []string{"list", "l"},
 		Args:              validators.ExactArgs(1),
 		ValidArgsFunction: cmdutil.IndexNames(opts.SearchClient),
-		Short:             "List all the the synonyms of the given index",
+		Short:             "List all the synonyms of the given index",
 		Annotations: map[string]string{
 			"runInWebCLI": "true",
 			"acls":        "settings",

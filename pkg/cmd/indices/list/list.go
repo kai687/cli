@@ -35,9 +35,10 @@ func NewListCmd(f *cmdutil.Factory) *cobra.Command {
 		PrintFlags:   cmdutil.NewPrintFlags(),
 	}
 	cmd := &cobra.Command{
-		Use:   "list",
-		Args:  validators.NoArgs(),
-		Short: "List indices",
+		Use:     "list",
+		Aliases: []string{"l"},
+		Args:    validators.NoArgs(),
+		Short:   "List indices",
 		Example: heredoc.Doc(`
 			# List indices
 			$ algolia indices list
