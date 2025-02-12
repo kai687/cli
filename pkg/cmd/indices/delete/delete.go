@@ -85,6 +85,7 @@ func NewDeleteCmd(f *cmdutil.Factory, runF func(*DeleteOptions) error) *cobra.Co
 	cmd.Flags().BoolVarP(&confirm, "confirm", "y", false, "skip confirmation prompt")
 	cmd.Flags().
 		BoolVarP(&opts.IncludeReplicas, "include-replicas", "r", false, "delete replica indices too")
+
 	cmd.Flags().BoolVarP(&opts.Wait, "wait", "w", false, "wait for the operation to complete")
 
 	return cmd
@@ -132,6 +133,17 @@ func runDeleteCmd(opts *DeleteOptions) error {
 			return fmt.Errorf("can't get settings of index %s: %w", index, err)
 		}
 
+		// If both primary and replica are going to be deleted, we have to wait
+		// Or the `SetSettings` call in `detachReplica` creates a new, empty index
+		if settings.HasReplicas() {
+			for _, r := range settings.Replicas {
+				if contains(opts.Indices, r) {
+					opts.Wait = true
+				}
+			}
+		}
+
+		// `index` is a replica index
 		if settings.HasPrimary() {
 			opts.IO.StartProgressIndicatorWithLabel(
 				fmt.Sprintf("Detaching replica index %s from its primary", index),
@@ -270,4 +282,14 @@ func removeReplica(replicas []string, name string) []string {
 		}
 	}
 	return replicas
+}
+
+// contains checks if ele is in arr
+func contains[T comparable](arr []T, ele T) bool {
+	for _, i := range arr {
+		if ele == i {
+			return true
+		}
+	}
+	return false
 }
